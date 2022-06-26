@@ -4,11 +4,32 @@
   "description": "Modern and different theme in three states",
   "version": "0.0.1",
    "publisher": "wicked-labs",
+   "repository": {
+    "type": "git",
+    "url": "https://github.com/Sequoia-Theme/vs-code"
+  },
+  "bugs": {
+    "type": "git",
+    "url": "https://github.com/Sequoia-Theme/vs-code"
+  },
+   "homepage": "https://sequoiatheme.com",
+  "icon": "logo/theme-icon.png",
+   "galleryBanner": {
+    "color": "#0f1014",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.68.0"
   },
   "categories": [
     "Themes"
+  ],
+  "keywords": [
+    "michael andreuzza",
+    "sequoia theme",
+    "monochrome",
+    "super dark theme",
+    "dark theme"
   ],
   "contributes": {
     "themes": [
