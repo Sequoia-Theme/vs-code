@@ -5,7 +5,7 @@
 # Official website
 -  [Sequoia](https://sequoiatheme.com)
 
-On the official website you will find guidelines, color refference, color pickers and a list of interefaces that Sequoia has been ported to.
+On the official website you will find guidelines, color refference, color pickers and soon a list of interefaces that Sequoia has been ported to.
 
 
 
@@ -15,7 +15,7 @@ On the official website you will find guidelines, color refference, color picker
 2. Search for **`Sequoia`**
 3. Click **Install** to install it.
 4. Code > Preferences > Color Theme >
- **Sequoia Midnight - Sequoia Sunset - Sequoia Morning**
+ **Sequoia Moonlight - Sequoia Foggy - Sequoia Monochrome**
 
 The theme is available for editors, shells, UI's and more coming up. Checkout the website
 
