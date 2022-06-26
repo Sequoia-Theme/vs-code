@@ -1,0 +1,33 @@
+{
+  "name": "sequoia",
+  "displayName": "Sequoia",
+  "description": "Modern and different theme in three states",
+  "version": "0.0.1",
+   "publisher": "wicked-labs",
+  "engines": {
+    "vscode": "^1.68.0"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Sequoia Monochrome",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-monochrome.json"
+      },
+      {
+        "label": "Sequoia Foggy",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-foggy.json"
+      },
+      {
+        "label": "Sequoia Moonlight",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-moonlight.json"
+      }
+
+    ]
+  }
+}
