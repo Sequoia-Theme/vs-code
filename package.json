@@ -39,9 +39,9 @@
         "path": "./themes/sequoia-monochrome.json"
       },
       {
-        "label": "Sequoia Foggy",
+        "label": "Sequoia Desaturated",
         "uiTheme": "vs-dark",
-        "path": "./themes/sequoia-foggy.json"
+        "path": "./themes/sequoia-desaturated.json"
       },
       {
         "label": "Sequoia Moonlight",
