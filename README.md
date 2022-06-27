@@ -25,6 +25,18 @@ The theme is available for editors, shells, UI's and more coming up. Checkout th
 
 ### EXAMPLES
 You have three themes, Monochrome, Moonlight and Desaturated and here the screenshots:
+### Moonlight
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-cpp.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-cs.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-css.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-html.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-java.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-js.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-md.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-py.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-sh.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-terminal.png?raw=true)
+
 ### Monochrome
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-cpp.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-cs.png?raw=true)
@@ -36,6 +48,18 @@ You have three themes, Monochrome, Moonlight and Desaturated and here the screen
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-py.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-sh.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-terminal.png?raw=true)
+
+### Monochrome
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-cpp.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-cs.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-css.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-html.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-java.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-js.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-md.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-py.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-sh.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-terminal.png?raw=true)
 ## Personal Settings.
 
 ```js
