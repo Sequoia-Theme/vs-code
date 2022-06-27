@@ -35,6 +35,7 @@ You have three themes, Monochrome, Moonlight and Desaturated and here the screen
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-md.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-py.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-sh.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-terminal.png?raw=true)
 ## Personal Settings.
 
 ```js
