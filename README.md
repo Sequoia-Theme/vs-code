@@ -1,4 +1,4 @@
-
+![Midnight](https://sequoiatheme.com/images/ogTwitter.png)
 
 # Sequoia for VS Code.
 
@@ -6,7 +6,6 @@
 -  [Sequoia](https://sequoiatheme.com)
 
 On the official website you will find guidelines, color refference, color pickers and soon a list of interefaces that Sequoia has been ported to.
-
 
 
 # Installation
@@ -24,7 +23,18 @@ The theme is available for editors, shells, UI's and more coming up. Checkout th
 - Sequoia Foggy
 - Sequoia Monochrome
 
-
+### EXAMPLES
+You have three themes, Monochrome, Moonlight and Desaturated and here the screenshots:
+### Monochrome
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-cpp.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-cs.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-css.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-html.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-java.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-js.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-md.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-py.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-sh.png?raw=true)
 ## Personal Settings.
 
 ```js
