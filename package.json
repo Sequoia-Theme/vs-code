@@ -2,9 +2,9 @@
   "name": "sequoia",
   "displayName": "Sequoia",
   "description": "Modern and different theme in three states",
-  "version": "0.0.2",
-   "publisher": "wicked-labs",
-   "repository": {
+  "version": "0.1.0",
+  "publisher": "wicked-labs",
+  "repository": {
     "type": "git",
     "url": "https://github.com/Sequoia-Theme/vs-code"
   },
@@ -12,9 +12,9 @@
     "type": "git",
     "url": "https://github.com/Sequoia-Theme/vs-code"
   },
-   "homepage": "https://sequoiatheme.com",
+  "homepage": "https://sequoiatheme.com",
   "icon": "logo/theme-icon.png",
-   "galleryBanner": {
+  "galleryBanner": {
     "color": "#0f1014",
     "theme": "dark"
   },
@@ -48,7 +48,6 @@
         "uiTheme": "vs-dark",
         "path": "./themes/sequoia-moonlight.json"
       }
-
     ]
   }
 }
