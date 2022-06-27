@@ -39,6 +39,7 @@ You have three themes, Monochrome, Moonlight and Desaturated and here the screen
 
 ### Monochrome
 
+
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-cpp.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-cs.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-css.png?raw=true)
