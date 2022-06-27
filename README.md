@@ -1,4 +1,4 @@
-![Midnight](https://sequoiatheme.com/images/ogTwitter.png)
+![monochrome](https://sequoiatheme.com/images/ogTwitter.png)
 
 # Sequoia for VS Code.
 
@@ -38,16 +38,16 @@ You have three themes, Monochrome, Moonlight and Desaturated and here the screen
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/moonlight-screenshots/moonlight-terminal.png?raw=true)
 
 ### Monochrome
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-cpp.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-cs.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-css.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-html.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-java.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-js.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-md.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-py.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-sh.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/midnight-screenshots/monochrome-terminal.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-cpp.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-cs.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-css.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-html.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-java.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-js.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-md.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-py.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-sh.png?raw=true)
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/monochrome-screenshots/monochrome-terminal.png?raw=true)
 
 ### Monochrome
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/master/desaturated-screenshots/desaturated-cpp.png?raw=true)
