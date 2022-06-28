@@ -14,17 +14,16 @@ On the official website you will find guidelines, color refference, color picker
 2. Search for **`Sequoia`**
 3. Click **Install** to install it.
 4. Code > Preferences > Color Theme >
- **Sequoia Moonlight - Sequoia Foggy - Sequoia Monochrome**
+ **Sequoia Moonlight - Sequoia Monochrome**
 
-The theme is available for editors, shells, UI's and more coming up. Checkout the website
+The theme is available for editors; shells, UI's and more coming up. Checkout the website
 
 ## Available Options
 - Sequoia Moonlight
-- Sequoia Foggy
 - Sequoia Monochrome
 
 ### EXAMPLES
-You have three themes, Monochrome, Moonlight and Desaturated and here the screenshots:
+You have two themes, Monochrome &amp; Moonlight and here the screenshots:
 ### Moonlight
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-cpp.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-cs.png?raw=true)
@@ -39,7 +38,6 @@ You have three themes, Monochrome, Moonlight and Desaturated and here the screen
 
 ### Monochrome
 
-
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-cpp.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-cs.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-css.png?raw=true)
@@ -51,17 +49,7 @@ You have three themes, Monochrome, Moonlight and Desaturated and here the screen
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-sh.png?raw=true)
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-terminal.png?raw=true)
 
-### Monochrome
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-cpp.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-cs.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-css.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-html.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-java.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-js.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-md.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-py.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-sh.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/desaturated-screenshots/desaturated-terminal.png?raw=true)
+
 ## Personal Settings.
 
 ```js
@@ -88,7 +76,7 @@ To **disable** italics for all themes, add this snippet to your `settings.json`:
 
 ```jsonc
 "editor.tokenColorCustomizations": {
-  "[Sequoia Moonlight][Sequoia Foggy][Sequoia Monochrome]": {
+  "[Sequoia Moonlight][Sequoia Monochrome]": {
     "textMateRules": [
       {
         "scope": [
