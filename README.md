@@ -154,5 +154,5 @@ To **disable** italics for all themes, add this snippet to your `settings.json`:
 },
 ```
 
-Sequoia Theme created by [Micheal Andreuzza](https://github.com/michael-andreuzza).
+Sequoia Theme created by [Michael Andreuzza](https://github.com/michael-andreuzza).
 [Twitter](https://twitter.com/Mike_Andreuzza)
