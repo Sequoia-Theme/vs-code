@@ -33,15 +33,16 @@
   ],
   "contributes": {
     "themes": [
-      {
-        "label": "Sequoia Moonlight",
-        "uiTheme": "vs-dark",
-        "path": "./themes/sequoia-moonlight.json"
-      },
+
       {
         "label": "Sequoia Monochrome",
         "uiTheme": "vs-dark",
         "path": "./themes/sequoia-monochrome.json"
+      }
+      ,{
+        "label": "Sequoia Moonlight",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-moonlight.json"
       }
 
     ]
