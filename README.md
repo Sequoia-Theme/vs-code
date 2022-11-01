@@ -1,4 +1,4 @@
-![monochrome](https://sequoiatheme.com/images/ogTwitter.png)
+![sequoia](https://raw.githubusercontent.com/Sequoia-Theme/assets/main/githubHeader.png)
 
 # Sequoia for VS Code.
 
