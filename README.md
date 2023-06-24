@@ -3,7 +3,7 @@
 # Sequoia for VS Code.
 
 # Official website
--  [Sequoia](https://unwrapped.design/sequoia/)
+-  [Sequoia](https://store.michaelandreuzza.com/sequoia/)
 
 On the official website you will find guidelines, color refference, color pickers and soon a list of interefaces that Sequoia has been ported to.
 
