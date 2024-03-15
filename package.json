@@ -1,8 +1,8 @@
 {
   "name": "sequoia",
   "displayName": "Sequoia",
-  "description": "Black, elegant, modern and gentle theme for VS Code and other platforms.",
-  "version": "1.23.0",
+  "description": "Black, elegant, modern and modern theme for VS Code and other interfaces.",
+  "version": "1.25.0",
   "publisher": "wicked-labs",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/Sequoia-Theme/vs-code"
   },
-  "homepage": "https://sequoiatheme.com",
+  "homepage": "https://www.michaelandreuzza.com/vscode/sequoia/",
   "icon": "logo/theme-icon.png",
   "galleryBanner": {
     "color": "#0f1014",
@@ -25,11 +25,13 @@
     "Themes"
   ],
   "keywords": [
-    "michael andreuzza",
-    "sequoia theme",
+    "retro",
+    "colorful",
+    "dark theme",
     "monochrome",
+    "sequoia theme",
     "super dark theme",
-    "dark theme"
+    "michael andreuzza"
   ],
   "contributes": {
     "themes": [
