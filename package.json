@@ -1,8 +1,8 @@
 {
   "name": "sequoia",
   "displayName": "Sequoia",
-  "description": "Black, elegant, modern and modern theme for VS Code and other interfaces.",
-  "version": "1.25.0",
+  "description": "Black, elegant, modern, monochrome or colourful theme for VS Code and other interfaces.",
+  "version": "1.30.0",
   "publisher": "wicked-labs",
   "repository": {
     "type": "git",

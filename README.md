@@ -1,12 +1,13 @@
 ![sequoia](https://raw.githubusercontent.com/Sequoia-Theme/assets/main/githubHeader.png)
 
 # Sequoia for VS Code.
+Sequoia is composed of a dark background with neutral gray tones for the editor and terminal areas, with subtle highlights in blue for active tabs and buttons, offering a comfortable and modern coding environment.
+
+
 
 # Official website
 See other interfaces at the official website.
 -  [Serendipity](https://www.michaelandreuzza.com/vscode/sequoia/)
-
-On the official website you will find guidelines, color refference, color pickers and soon a list of interefaces that Sequoia has been ported to.
 
 
 # Installation
