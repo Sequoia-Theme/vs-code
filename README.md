@@ -7,7 +7,7 @@ Sequoia is composed of a dark background with neutral gray tones for the editor 
 
 # Official website
 See other interfaces at the official website.
--  [Serendipity](https://www.michaelandreuzza.com/vscode/sequoia/)
+-  [Sequoia](https://www.michaelandreuzza.com/vscode/sequoia/)
 
 
 # Installation
@@ -16,40 +16,27 @@ See other interfaces at the official website.
 2. Search for **`Sequoia`**
 3. Click **Install** to install it.
 4. Code > Preferences > Color Theme >
- **Sequoia Moonlight - Sequoia Monochrome**
+ **Sequoia Moonlight - Sequoia Monochrome** - **Sequoia Retro**
 
 The theme is available for editors; shells, UI's and more coming up. Checkout the website
 
 ## Available Options
 - Sequoia Moonlight
 - Sequoia Monochrome
+- Sequoia Retro ( Only on VS Code)
 
 ### EXAMPLES
-You have two themes, Monochrome &amp; Moonlight and here the screenshots:
-### Moonlight
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-cpp.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-cs.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-css.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-html.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-java.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-js.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-md.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-py.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-sh.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/moonlight-screenshots/moonlight-terminal.png?raw=true)
+You have three themes, Monochrome, Moonlight &amp; Retro and here the screenshots:
 
 ### Monochrome
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/images/monochrome.png?raw=true)
 
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-cpp.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-cs.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-css.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-html.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-java.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-js.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-md.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-py.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-sh.png?raw=true)
-![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/monochrome-screenshots/monochrome-terminal.png?raw=true)
+### Moonlight
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/images/moonlight.png?raw=true)
+
+### Retro
+![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/images/retro.png?raw=true)
+
 
 
 ## Personal Settings.

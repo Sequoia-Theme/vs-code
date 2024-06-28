@@ -2,7 +2,7 @@
   "name": "sequoia",
   "displayName": "Sequoia",
   "description": "Black, elegant, modern, monochrome or colourful theme for VS Code and other interfaces.",
-  "version": "1.30.0",
+  "version": "1.31.0",
   "publisher": "wicked-labs",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "monochrome",
     "sequoia theme",
     "super dark theme",
-    "michael andreuzza"
+    "retro"
   ],
   "contributes": {
     "themes": [
@@ -44,6 +44,11 @@
         "label": "Sequoia Moonlight",
         "uiTheme": "vs-dark",
         "path": "./themes/sequoia-moonlight.json"
+      },
+      {
+        "label": "Sequoia Retro",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-retro.json"
       }
     ]
   }

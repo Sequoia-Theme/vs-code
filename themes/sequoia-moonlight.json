@@ -406,6 +406,7 @@
 		"tab.activeForeground": "#868690",
 		"tab.activeModifiedBorder": "#c58fff",
 		"tab.border": "#0000",
+		"tab.activeBorderTop": "#ffbb88",
 		"tab.hoverBackground": "#817c9c26",
 		"tab.inactiveBackground": "#0000",
 		"tab.inactiveForeground": "#575861",
