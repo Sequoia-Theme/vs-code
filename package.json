@@ -36,6 +36,21 @@
   "contributes": {
     "themes": [
       {
+        "label": "Sequoia Monochrome Light",
+        "uiTheme": "vs",
+        "path": "./themes/sequoia-monochrome-light.json"
+      },
+      {
+        "label": "Sequoia Sunlight",
+        "uiTheme": "vs",
+        "path": "./themes/sequoia-sunlight.json"
+      },
+      {
+        "label": "Sequoia Retro Light",
+        "uiTheme": "vs",
+        "path": "./themes/sequoia-retro-light.json"
+      },
+      {
         "label": "Sequoia Retro",
         "uiTheme": "vs-dark",
         "path": "./themes/sequoia-retro.json"
