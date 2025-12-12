@@ -17,6 +17,8 @@ See other interfaces at the official website.
 3. Click **Install** to install it.
 4. Code > Preferences > Color Theme >
  **Sequoia Moonlight - Sequoia Monochrome** - **Sequoia Retro**
+5. Code > Preferences > File Icon Theme > 
+ **Sequoia Moonlight - Sequoia Monochrome** - **Sequoia Retro**
 
 The theme is available for editors; shells, UI's and more coming up. Checkout the website
 
@@ -37,7 +39,9 @@ You have three themes, Monochrome, Moonlight &amp; Retro and here the screenshot
 ### Retro
 ![VS Code Marketplace](https://github.com/Sequoia-Theme/vs-code/blob/main/images/retro.png?raw=true)
 
+## Icon Theme
 
+Matching icon themes are available to complement the color schemes.
 
 ## Personal Settings.
 
