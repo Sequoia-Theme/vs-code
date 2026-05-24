@@ -2,12 +2,57 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "sequoia: set debug theme",
+      "label": "sequoia: debug Moonlight Light",
       "type": "process",
       "command": "node",
       "args": [
         "${workspaceFolder}/scripts/set-debug-theme.js",
-        "${input:sequoiaDebugTheme}"
+        "Sequoia Moonlight Light"
+      ]
+    },
+    {
+      "label": "sequoia: debug Moonlight Dark",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/set-debug-theme.js",
+        "Sequoia Moonlight Dark"
+      ]
+    },
+    {
+      "label": "sequoia: debug Monochrome Light",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/set-debug-theme.js",
+        "Sequoia Monochrome Light"
+      ]
+    },
+    {
+      "label": "sequoia: debug Monochrome Dark",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/set-debug-theme.js",
+        "Sequoia Monochrome Dark"
+      ]
+    },
+    {
+      "label": "sequoia: debug Retro Light",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/set-debug-theme.js",
+        "Sequoia Retro Light"
+      ]
+    },
+    {
+      "label": "sequoia: debug Retro Dark",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/set-debug-theme.js",
+        "Sequoia Retro Dark"
       ]
     }
   ]
