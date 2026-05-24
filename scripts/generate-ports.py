@@ -778,6 +778,94 @@ module.exports = {{
         shadcn_dirs + ["tailwind.preset.js"],
     ))
 
+    for port in ("ghostty", "starship", "lazygit", "neovim", "zed", "obsidian", "prism", "shadcn-ui"):
+        write_vscode_debug(OUT / port)
+
+
+VSCODE_LAUNCH = """{
+  "version": "0.2.0",
+  "inputs": [
+    {
+      "id": "sequoiaExtensionRoot",
+      "type": "pickString",
+      "description": "Folder containing Sequoia VS Code extension (package.json)",
+      "options": [
+        "${workspaceFolder}/../../sequoia",
+        "${workspaceFolder}/../sequoia"
+      ],
+      "default": "${workspaceFolder}/../../sequoia"
+    },
+    {
+      "id": "sequoiaDebugTheme",
+      "type": "pickString",
+      "description": "Sequoia theme to preview",
+      "options": [
+        "Sequoia Moonlight Dark",
+        "Sequoia Moonlight Light",
+        "Sequoia Monochrome Dark",
+        "Sequoia Monochrome Light",
+        "Sequoia Retro Dark",
+        "Sequoia Retro Light"
+      ],
+      "default": "Sequoia Moonlight Dark"
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Preview Sequoia theme in VS Code",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "preLaunchTask": "sequoia: set debug theme",
+      "args": [
+        "--extensionDevelopmentPath=${input:sequoiaExtensionRoot}",
+        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
+      ],
+      "env": {
+        "SEQUOIA_DEBUG_THEME": "${input:sequoiaDebugTheme}"
+      },
+      "settings": {
+        "window.autoDetectColorScheme": false,
+        "workbench.colorTheme": "${input:sequoiaDebugTheme}"
+      }
+    }
+  ]
+}
+"""
+
+VSCODE_TASKS = """{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "sequoia: set debug theme",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/set-debug-theme.js",
+        "${input:sequoiaDebugTheme}"
+      ]
+    }
+  ]
+}
+"""
+
+
+def write_vscode_debug(port_dir: Path) -> None:
+    script_src = ROOT / "scripts" / "set-debug-theme.js"
+    script_dst = port_dir / "scripts" / "set-debug-theme.js"
+    script_dst.parent.mkdir(parents=True, exist_ok=True)
+    script_dst.write_text(script_src.read_text(encoding="utf-8"), encoding="utf-8")
+    write(port_dir / ".vscode" / "launch.json", VSCODE_LAUNCH)
+    write(port_dir / ".vscode" / "tasks.json", VSCODE_TASKS)
+    gitignore = port_dir / ".gitignore"
+    entry = ".vscode-debug/\n"
+    if gitignore.exists():
+        content = gitignore.read_text(encoding="utf-8")
+        if ".vscode-debug/" not in content:
+            gitignore.write_text(content.rstrip() + "\n" + entry, encoding="utf-8")
+    else:
+        gitignore.write_text(entry, encoding="utf-8")
+
 
 def generate_tokens_json(all_tokens: dict[str, Tokens]) -> None:
     grouped: dict[str, dict] = {}
