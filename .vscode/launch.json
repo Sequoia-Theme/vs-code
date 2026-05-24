@@ -1,17 +1,113 @@
-// A launch configuration that launches the extension inside a new window
-// Use IntelliSense to learn about possible attributes.
-// Hover to view descriptions of existing attributes.
-// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
-	"version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Extension",
-            "type": "extensionHost",
-            "request": "launch",
-            "args": [
-                "--extensionDevelopmentPath=${workspaceFolder}"
-            ]
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Extension (Moonlight Light)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "preLaunchTask": "sequoia: debug Moonlight Light",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
+      ],
+      "env": {
+        "SEQUOIA_DEBUG_THEME": "Sequoia Moonlight Light"
+      },
+      "settings": {
+        "window.autoDetectColorScheme": false,
+        "workbench.colorTheme": "Sequoia Moonlight Light"
+      }
+    },
+    {
+      "name": "Extension (Moonlight Dark)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "preLaunchTask": "sequoia: debug Moonlight Dark",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
+      ],
+      "env": {
+        "SEQUOIA_DEBUG_THEME": "Sequoia Moonlight Dark"
+      },
+      "settings": {
+        "window.autoDetectColorScheme": false,
+        "workbench.colorTheme": "Sequoia Moonlight Dark"
+      }
+    },
+    {
+      "name": "Extension (Monochrome Light)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "preLaunchTask": "sequoia: debug Monochrome Light",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
+      ],
+      "env": {
+        "SEQUOIA_DEBUG_THEME": "Sequoia Monochrome Light"
+      },
+      "settings": {
+        "window.autoDetectColorScheme": false,
+        "workbench.colorTheme": "Sequoia Monochrome Light"
+      }
+    },
+    {
+      "name": "Extension (Monochrome Dark)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "preLaunchTask": "sequoia: debug Monochrome Dark",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
+      ],
+      "env": {
+        "SEQUOIA_DEBUG_THEME": "Sequoia Monochrome Dark"
+      },
+      "settings": {
+        "window.autoDetectColorScheme": false,
+        "workbench.colorTheme": "Sequoia Monochrome Dark"
+      }
+    },
+    {
+      "name": "Extension (Retro Light)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "preLaunchTask": "sequoia: debug Retro Light",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
+      ],
+      "env": {
+        "SEQUOIA_DEBUG_THEME": "Sequoia Retro Light"
+      },
+      "settings": {
+        "window.autoDetectColorScheme": false,
+        "workbench.colorTheme": "Sequoia Retro Light"
+      }
+    },
+    {
+      "name": "Extension (Retro Dark)",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "preLaunchTask": "sequoia: debug Retro Dark",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
+      ],
+      "env": {
+        "SEQUOIA_DEBUG_THEME": "Sequoia Retro Dark"
+      },
+      "settings": {
+        "window.autoDetectColorScheme": false,
+        "workbench.colorTheme": "Sequoia Retro Dark"
+      }
+    }
+  ]
 }

@@ -15,15 +15,25 @@ See other interfaces at the official website.
 1. Open **Extensions** sidebar panel in VS Code. `View → Extensions`
 2. Search for **`Sequoia`**
 3. Click **Install** to install it.
-4. Code > Preferences > Color Theme >
- **Sequoia Moonlight - Sequoia Monochrome** - **Sequoia Retro**
+4. Code > Preferences > Color Theme — pick a **Dark** or **Light** variant:
+
+| Dark | Light |
+| --- | --- |
+| Sequoia Moonlight Dark | Sequoia Moonlight Light |
+| Sequoia Monochrome Dark | Sequoia Monochrome Light |
+| Sequoia Retro Dark | Sequoia Retro Light |
+
+Legacy names **Sequoia Moonlight**, **Sequoia Monochrome**, and **Sequoia Retro** still work for existing installs.
 
 The theme is available for editors; shells, UI's and more coming up. Checkout the website
 
 ## Available Options
-- Sequoia Moonlight
-- Sequoia Monochrome
-- Sequoia Retro ( Only on VS Code)
+
+| Dark | Light |
+| --- | --- |
+| Sequoia Moonlight Dark | Sequoia Moonlight Light |
+| Sequoia Monochrome Dark | Sequoia Monochrome Light |
+| Sequoia Retro Dark | Sequoia Retro Light |
 
 ### EXAMPLES
 You have three themes, Monochrome, Moonlight &amp; Retro and here the screenshots:
@@ -65,7 +75,7 @@ To **disable** italics for all themes, add this snippet to your `settings.json`:
 
 ```jsonc
 "editor.tokenColorCustomizations": {
-  "[Sequoia Moonlight][Sequoia Monochrome]": {
+  "[Sequoia Moonlight Dark][Sequoia Moonlight Light][Sequoia Monochrome Dark][Sequoia Monochrome Light][Sequoia Retro Dark][Sequoia Retro Light][Sequoia Moonlight][Sequoia Monochrome][Sequoia Retro]": {
     "textMateRules": [
       {
         "scope": [

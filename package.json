@@ -2,7 +2,7 @@
   "name": "sequoia",
   "displayName": "Sequoia",
   "description": "Black, elegant, modern, monochrome or colourful theme for VS Code and other interfaces.",
-  "version": "1.31.3",
+  "version": "1.32.0",
   "publisher": "wicked-labs",
   "repository": {
     "type": "git",
@@ -21,6 +21,10 @@
   "engines": {
     "vscode": "^1.68.0"
   },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "categories": [
     "Themes"
   ],
@@ -28,6 +32,7 @@
     "retro",
     "colorful",
     "dark theme",
+    "light theme",
     "monochrome",
     "sequoia theme",
     "super dark theme",
@@ -35,11 +40,15 @@
   ],
   "contributes": {
     "themes": [
-      
       {
-        "label": "Sequoia Retro",
+        "label": "Sequoia Moonlight Light",
+        "uiTheme": "vs",
+        "path": "./themes/sequoia-moonlight-light.json"
+      },
+      {
+        "label": "Sequoia Moonlight Dark",
         "uiTheme": "vs-dark",
-        "path": "./themes/sequoia-retro.json"
+        "path": "./themes/sequoia-moonlight.json"
       },
       {
         "label": "Sequoia Moonlight",
@@ -47,9 +56,34 @@
         "path": "./themes/sequoia-moonlight.json"
       },
       {
+        "label": "Sequoia Monochrome Light",
+        "uiTheme": "vs",
+        "path": "./themes/sequoia-monochrome-light.json"
+      },
+      {
+        "label": "Sequoia Monochrome Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-monochrome.json"
+      },
+      {
         "label": "Sequoia Monochrome",
         "uiTheme": "vs-dark",
         "path": "./themes/sequoia-monochrome.json"
+      },
+      {
+        "label": "Sequoia Retro Light",
+        "uiTheme": "vs",
+        "path": "./themes/sequoia-retro-light.json"
+      },
+      {
+        "label": "Sequoia Retro Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-retro.json"
+      },
+      {
+        "label": "Sequoia Retro",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sequoia-retro.json"
       }
     ]
   }
