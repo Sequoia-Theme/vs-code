@@ -397,15 +397,32 @@ return M
 """
 
 
+def zed_family(family_name: str, dark: Tokens, light: Tokens) -> dict:
+    return {
+        "$schema": "https://zed.dev/schema/themes/v0.2.0.json",
+        "name": family_name,
+        "author": "Micheal Andreuzza",
+        "themes": [
+            zed_theme_variant(dark),
+            zed_theme_variant(light),
+        ],
+    }
+
+
 def zed_theme(tokens: Tokens) -> dict:
-    t = tokens.terminal
-    ff = lambda c: f"{c}ff" if len(c) == 7 else c
-    border = with_alpha(tokens.muted, "33")
     return {
         "$schema": "https://zed.dev/schema/themes/v0.2.0.json",
         "name": tokens.name,
         "author": "Micheal Andreuzza",
-        "themes": [{
+        "themes": [zed_theme_variant(tokens)],
+    }
+
+
+def zed_theme_variant(tokens: Tokens) -> dict:
+    t = tokens.terminal
+    ff = lambda c: f"{c}ff" if len(c) == 7 else c
+    border = with_alpha(tokens.muted, "33")
+    return {
             "name": tokens.name,
             "appearance": tokens.appearance,
             "style": {
@@ -469,11 +486,11 @@ def zed_theme(tokens: Tokens) -> dict:
                     "variable": {"color": ff(tokens.variable), "font_style": "italic"},
                     "type": {"color": ff(tokens.type_color)},
                     "constant": {"color": ff(tokens.constant)},
-                    "operator": {"color": ff(tokens.operator)},
-                    "error": {"color": ff(tokens.error)},
+                    "tag": {"color": ff(tokens.type_color)},
+                    "attribute": {"color": ff(tokens.function), "font_style": "italic"},
+                    "punctuation": {"color": ff(tokens.operator)},
                 },
             },
-        }],
     }
 
 
@@ -667,14 +684,20 @@ config-file = ~/.config/ghostty/sequoia-moonlight-dark
     ))
 
     zed_files = []
-    for vid, tok in all_tokens.items():
-        fname = f"sequoia-{vid}.json"
+    zed_families = [
+        ("sequoia-moonlight", "Sequoia Moonlight", "moonlight-dark", "moonlight-light"),
+        ("sequoia-monochrome", "Sequoia Monochrome", "monochrome-dark", "monochrome-light"),
+        ("sequoia-retro", "Sequoia Retro", "retro-dark", "retro-light"),
+    ]
+    for slug, family_name, dark_id, light_id in zed_families:
+        fname = f"{slug}.json"
         zed_files.append(f"themes/{fname}")
-        write(OUT / "zed" / "themes" / fname, json.dumps(zed_theme(tok), indent=2) + "\n")
+        family = zed_family(family_name, all_tokens[dark_id], all_tokens[light_id])
+        write(OUT / "zed" / "themes" / fname, json.dumps(family, indent=2) + "\n")
 
     write(OUT / "zed" / "extension.toml", """id = "sequoia"
 name = "Sequoia"
-version = "1.0.0"
+version = "1.1.0"
 schema_version = 1
 authors = ["Micheal Andreuzza <michael@andreuzza.com>"]
 description = "Sequoia theme for Zed — Moonlight, Monochrome, and Retro (dark and light)"
@@ -683,8 +706,9 @@ repository = "https://github.com/Sequoia-Theme/zed"
     write(OUT / "zed" / "LICENSE", LICENSE + "\n")
     write(OUT / "zed" / "README.md", port_readme(
         "Sequoia for Zed",
-        """1. Clone into your Zed extensions directory or install from the repo URL.
-2. Select **Sequoia Moonlight Dark** (or any variant) in Zed's theme picker.""",
+        """1. In Zed, run **zed: extensions** → **Install Dev Extension** and select this repo.
+2. Open the theme picker (**cmd+k cmd+t** / **ctrl+k ctrl+t**).
+3. Choose **Sequoia Moonlight**, **Sequoia Monochrome**, or **Sequoia Retro**, then pick **Dark** or **Light**.""",
         zed_files,
     ))
 

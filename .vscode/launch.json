@@ -1,112 +1,38 @@
 {
   "version": "0.2.0",
+  "inputs": [
+    {
+      "id": "sequoiaDebugTheme",
+      "type": "pickString",
+      "description": "Sequoia theme to debug",
+      "options": [
+        "Sequoia Moonlight Dark",
+        "Sequoia Moonlight Light",
+        "Sequoia Monochrome Dark",
+        "Sequoia Monochrome Light",
+        "Sequoia Retro Dark",
+        "Sequoia Retro Light"
+      ],
+      "default": "Sequoia Moonlight Dark"
+    }
+  ],
   "configurations": [
     {
-      "name": "Extension (Moonlight Light)",
+      "name": "Extension",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "preLaunchTask": "sequoia: debug Moonlight Light",
+      "preLaunchTask": "sequoia: set debug theme",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
       ],
       "env": {
-        "SEQUOIA_DEBUG_THEME": "Sequoia Moonlight Light"
+        "SEQUOIA_DEBUG_THEME": "${input:sequoiaDebugTheme}"
       },
       "settings": {
         "window.autoDetectColorScheme": false,
-        "workbench.colorTheme": "Sequoia Moonlight Light"
-      }
-    },
-    {
-      "name": "Extension (Moonlight Dark)",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "preLaunchTask": "sequoia: debug Moonlight Dark",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
-      ],
-      "env": {
-        "SEQUOIA_DEBUG_THEME": "Sequoia Moonlight Dark"
-      },
-      "settings": {
-        "window.autoDetectColorScheme": false,
-        "workbench.colorTheme": "Sequoia Moonlight Dark"
-      }
-    },
-    {
-      "name": "Extension (Monochrome Light)",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "preLaunchTask": "sequoia: debug Monochrome Light",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
-      ],
-      "env": {
-        "SEQUOIA_DEBUG_THEME": "Sequoia Monochrome Light"
-      },
-      "settings": {
-        "window.autoDetectColorScheme": false,
-        "workbench.colorTheme": "Sequoia Monochrome Light"
-      }
-    },
-    {
-      "name": "Extension (Monochrome Dark)",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "preLaunchTask": "sequoia: debug Monochrome Dark",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
-      ],
-      "env": {
-        "SEQUOIA_DEBUG_THEME": "Sequoia Monochrome Dark"
-      },
-      "settings": {
-        "window.autoDetectColorScheme": false,
-        "workbench.colorTheme": "Sequoia Monochrome Dark"
-      }
-    },
-    {
-      "name": "Extension (Retro Light)",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "preLaunchTask": "sequoia: debug Retro Light",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
-      ],
-      "env": {
-        "SEQUOIA_DEBUG_THEME": "Sequoia Retro Light"
-      },
-      "settings": {
-        "window.autoDetectColorScheme": false,
-        "workbench.colorTheme": "Sequoia Retro Light"
-      }
-    },
-    {
-      "name": "Extension (Retro Dark)",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "preLaunchTask": "sequoia: debug Retro Dark",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--user-data-dir=${workspaceFolder}/.vscode-debug/user-data"
-      ],
-      "env": {
-        "SEQUOIA_DEBUG_THEME": "Sequoia Retro Dark"
-      },
-      "settings": {
-        "window.autoDetectColorScheme": false,
-        "workbench.colorTheme": "Sequoia Retro Dark"
+        "workbench.colorTheme": "${input:sequoiaDebugTheme}"
       }
     }
   ]
