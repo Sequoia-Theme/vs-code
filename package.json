@@ -3,7 +3,7 @@
   "displayName": "Sequoia",
   "description": "Black, elegant, modern, monochrome or colourful theme for VS Code and other interfaces.",
   "version": "1.32.0",
-  "publisher": "wicked-labs",
+  "publisher": "sequoia",
   "repository": {
     "type": "git",
     "url": "https://github.com/Sequoia-Theme/vs-code"
