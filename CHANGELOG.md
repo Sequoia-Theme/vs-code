@@ -4,6 +4,12 @@ All notable changes to the "sequoia" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.33.0] - 2026-05-25
+
+### Added
+
+- Jupyter notebook cell borders and backgrounds for all six Sequoia variants
+
 ## [1.32.0] - 2026-05-24
 
 ### Added

@@ -463,6 +463,17 @@
     "window.activeBorder": "#111216",
     "window.inactiveBorder": "#111216"
   },
+    "notebook.editorBackground": "#0F1014",
+    "notebook.cellEditorBackground": "#0F1014",
+    "notebook.cellHoverBackground": "#11121680",
+    "notebook.focusedCellBackground": "#111216",
+    "notebook.selectedCellBackground": "#111216",
+    "notebook.symbolHighlightBackground": "#817c9c26",
+    "notebook.outputContainerBackgroundColor": "#111216",
+    "notebook.cellBorderColor": "#131317",
+    "notebook.focusedCellBorder": "#B6BAC8",
+    "notebook.inactiveFocusedCellBorder": "#817c9c26",
+    "notebook.selectedCellBorder": "#817c9c26",
   "tokenColors": [
     {
       "scope": ["comment"],
