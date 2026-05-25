@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Sublime Text, Logseq, Base16, and Shiki ports for Sequoia."""
+"""Generate Sublime Text, Logseq, Base16, Shiki, and Starlight ports for Sequoia."""
 
 from __future__ import annotations
 
@@ -25,10 +25,21 @@ PREFIX = _gp.PREFIX
 VARIANTS = _gp.VARIANTS
 Tokens = _gp.Tokens
 bat_tmtheme = _gp.bat_tmtheme
+hex6 = _gp.hex6
+hex_to_hsl = _gp.hex_to_hsl
 load_tokens = _gp.load_tokens
 write = _gp.write
 write_port = _gp.write_port
 with_alpha = _gp.with_alpha
+
+STARLIGHT_PAIRS: dict[str, tuple[str, str]] = {
+    "moonlight-dark": ("moonlight-dark", "moonlight-light"),
+    "moonlight-light": ("moonlight-dark", "moonlight-light"),
+    "monochrome-dark": ("monochrome-dark", "monochrome-light"),
+    "monochrome-light": ("monochrome-dark", "monochrome-light"),
+    "retro-dark": ("retro-dark", "retro-light"),
+    "retro-light": ("retro-dark", "retro-light"),
+}
 
 
 def logseq_css_vars(tokens: Tokens) -> str:
@@ -85,6 +96,115 @@ palette:
   base0D: "{tokens.type_color}"
   base0E: "{tokens.string}"
   base0F: "{tokens.constant}"
+"""
+
+
+def hsl_offset(color: str, l_offset: int) -> str:
+    hue, sat, light = hex_to_hsl(color)
+    l_num = int(light.rstrip("%"))
+    new_l = min(max(l_num + l_offset, 0), 100)
+    return f"hsl({hue}, {sat}, {new_l}%)"
+
+
+def starlight_mode_vars(tokens: Tokens) -> str:
+    is_dark = tokens.appearance == "dark"
+    accent = tokens.accent or tokens.function
+    lo = -45 if is_dark else -25
+    hi = 25 if is_dark else 45
+    lines = [
+        f"  --sl-color-accent-low: {hsl_offset(accent, lo)};",
+        f"  --sl-color-accent: {hex6(accent)};",
+        f"  --sl-color-accent-high: {hsl_offset(accent, hi)};",
+    ]
+    if is_dark:
+        lines.extend(
+            [
+                f"  --sl-color-white: {tokens.foreground};",
+                f"  --sl-color-gray-1: {hsl_offset(tokens.foreground, 8)};",
+                f"  --sl-color-gray-2: {tokens.muted};",
+                f"  --sl-color-gray-3: {tokens.comment};",
+                f"  --sl-color-gray-4: {hsl_offset(tokens.muted, -15)};",
+                f"  --sl-color-gray-5: {tokens.surface};",
+                f"  --sl-color-gray-6: {hsl_offset(tokens.background, 8)};",
+                f"  --sl-color-black: {tokens.background};",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                f"  --sl-color-white: {tokens.foreground};",
+                f"  --sl-color-gray-1: {hsl_offset(tokens.foreground, 10)};",
+                f"  --sl-color-gray-2: {tokens.muted};",
+                f"  --sl-color-gray-3: {tokens.comment};",
+                f"  --sl-color-gray-4: {hsl_offset(tokens.muted, 15)};",
+                f"  --sl-color-gray-5: {hsl_offset(tokens.muted, 35)};",
+                f"  --sl-color-gray-6: {hsl_offset(tokens.surface, 10)};",
+                f"  --sl-color-gray-7: {tokens.surface};",
+                f"  --sl-color-black: {tokens.background};",
+            ]
+        )
+
+    t = tokens.terminal
+    for hue_name, term_key in [
+        ("orange", "yellow"),
+        ("green", "green"),
+        ("blue", "cyan"),
+        ("purple", "magenta"),
+        ("red", "red"),
+    ]:
+        color = t[term_key]
+        hue, _, _ = hex_to_hsl(color)
+        lines.append(f"  --sl-hue-{hue_name}: {hue};")
+        lines.append(
+            f"  --sl-color-{hue_name}-low: {hsl_offset(color, -30 if is_dark else 30)};"
+        )
+        lines.append(f"  --sl-color-{hue_name}: {hex6(color)};")
+        lines.append(
+            f"  --sl-color-{hue_name}-high: {hsl_offset(color, 15 if is_dark else -15)};"
+        )
+    return "\n".join(lines)
+
+
+def starlight_css(
+    dark: Tokens, light: Tokens, *, brand: str, variant_label: str
+) -> str:
+    layer = brand.lower()
+    return f"""/* {brand} {variant_label} for Astro Starlight */
+@layer starlight, {layer};
+
+@layer {layer} {{
+  :root,
+  ::backdrop {{
+{starlight_mode_vars(dark)}
+  }}
+
+  :root[data-theme='light'],
+  [data-theme='light'] ::backdrop {{
+{starlight_mode_vars(light)}
+  }}
+}}
+"""
+
+
+def astro_config_example(*, brand: str, css_file: str, dark_json: str, light_json: str) -> str:
+    return f"""// Example astro.config.mjs — {brand} for Starlight
+import {{ defineConfig }} from 'astro/config';
+import starlight from '@astrojs/starlight';
+
+export default defineConfig({{
+  integrations: [
+    starlight({{
+      title: 'My Docs',
+      customCss: ['./src/styles/{css_file}'],
+      expressiveCode: {{
+        themes: [
+          './src/themes/{dark_json}',
+          './src/themes/{light_json}',
+        ],
+      }},
+    }}),
+  ],
+}});
 """
 
 
@@ -155,6 +275,48 @@ def generate() -> None:
         "Import JSON themes into [Shiki](https://shiki.style/).",
         "Sequoia for Shiki",
         shiki_files,
+    )
+
+    starlight_files: list[str] = []
+    for vid in all_tokens:
+        dark_id, light_id = STARLIGHT_PAIRS[vid]
+        dark_tok = all_tokens[dark_id]
+        light_tok = all_tokens[light_id]
+        css_name = f"{PREFIX}-{vid}.css"
+        starlight_files.append(css_name)
+        write(
+            OUT / "starlight" / css_name,
+            starlight_css(
+                dark_tok,
+                light_tok,
+                brand="Sequoia",
+                variant_label=dark_tok.name.replace("Sequoia ", ""),
+            ),
+        )
+        for pair_id in {dark_id, light_id}:
+            json_name = f"{PREFIX}-{pair_id}.json"
+            if json_name not in starlight_files:
+                starlight_files.append(json_name)
+                fname = dict(VARIANTS)[pair_id]
+                write(OUT / "starlight" / json_name, shiki_theme(pair_id, fname))
+    example_name = "astro.config.example.mjs"
+    starlight_files.append(example_name)
+    write(
+        OUT / "starlight" / example_name,
+        astro_config_example(
+            brand="Sequoia Moonlight",
+            css_file=f"{PREFIX}-moonlight-dark.css",
+            dark_json=f"{PREFIX}-moonlight-dark.json",
+            light_json=f"{PREFIX}-moonlight-light.json",
+        ),
+    )
+    write_port(
+        "starlight",
+        "Copy a `.css` file and matching Shiki `.json` themes into your Starlight project. "
+        "Add the CSS path to `starlight({ customCss })` and JSON paths to `expressiveCode.themes`. "
+        "See `astro.config.example.mjs`.",
+        "Sequoia for Starlight",
+        starlight_files,
     )
 
     print("Generated extra Sequoia ports in", OUT)
