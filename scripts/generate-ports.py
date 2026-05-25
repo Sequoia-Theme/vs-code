@@ -48,6 +48,7 @@ SOFTWARE.
 
 HEADER = "https://raw.githubusercontent.com/Sequoia-Theme/assets/main/githubHeader.png"
 WEBSITE = "https://www.michaelandreuzza.com/vscode/sequoia/"
+PREFIX = "sequoia"
 
 
 @dataclass
@@ -113,8 +114,12 @@ def hex6(value: str | None, fallback: str = "#000000") -> str:
 
 
 def with_alpha(color: str, alpha: str = "33") -> str:
-    base = hex6(color)
-    return f"{base}{alpha}"
+    return f"{hex6(color)}{alpha}"
+
+
+def hex_rgb_float(color: str) -> tuple[float, float, float]:
+    c = hex6(color).lstrip("#")
+    return int(c[0:2], 16) / 255, int(c[2:4], 16) / 255, int(c[4:6], 16) / 255
 
 
 def scope_fg(token_colors: list, *needles: str) -> str | None:
@@ -123,10 +128,7 @@ def scope_fg(token_colors: list, *needles: str) -> str | None:
         fg = rule.get("settings", {}).get("foreground")
         if not fg:
             continue
-        if isinstance(scopes, str):
-            items = [scopes]
-        else:
-            items = scopes or []
+        items = [scopes] if isinstance(scopes, str) else scopes or []
         for item in items:
             for needle in needles:
                 if item == needle or item.startswith(needle):
@@ -195,28 +197,31 @@ def load_tokens(variant_id: str, filename: str) -> Tokens:
     )
 
 
-def write(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
-
-
 def variant_label(variant_id: str) -> str:
     family, mode = variant_id.rsplit("-", 1)
     return f"{family.title()} {mode.title()}"
 
 
+def write(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
 def port_readme(title: str, install: str, files: list[str]) -> str:
-    variants = "\n".join(f"- **{variant_label(vid)}** — {mode}" for vid, mode in [
-        ("moonlight-dark", "dark"), ("moonlight-light", "light"),
-        ("monochrome-dark", "dark"), ("monochrome-light", "light"),
-        ("retro-dark", "dark"), ("retro-light", "light"),
-    ])
+    variants = "\n".join(
+        f"- **{variant_label(vid)}** — {mode}"
+        for vid, mode in [
+            ("moonlight-dark", "dark"), ("moonlight-light", "light"),
+            ("monochrome-dark", "dark"), ("monochrome-light", "light"),
+            ("retro-dark", "dark"), ("retro-light", "light"),
+        ]
+    )
     file_list = ", ".join(f"`{name}`" for name in files)
     return f"""![Sequoia]({HEADER})
 
 # {title}
 
-Black, elegant, modern, monochrome or colourful theme for your tools.
+Elegant, minimal, and clean color palette for your tools.
 
 See other interfaces at the [official website]({WEBSITE}).
 
@@ -236,6 +241,27 @@ Available files: {file_list}.
 """
 
 
+def write_port(port: str, install: str, title: str, files: list[str], extra: dict[str, str] | None = None) -> None:
+    port_dir = OUT / port
+    write(port_dir / "LICENSE", LICENSE + "\n")
+    write(port_dir / "README.md", port_readme(title, install, files))
+    if extra:
+        for rel, content in extra.items():
+            write(port_dir / rel, content)
+
+
+def terminal_palette_lines(t: dict[str, str]) -> list[str]:
+    order = [
+        "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white",
+        "bright_black", "bright_red", "bright_green", "bright_yellow",
+        "bright_blue", "bright_magenta", "bright_cyan", "bright_white",
+    ]
+    return [t[k] for k in order]
+
+
+# --- Existing port emitters (adapted for Sequoia) ---
+
+
 def ghostty(tokens: Tokens) -> str:
     t = tokens.terminal
     lines = [
@@ -246,18 +272,17 @@ def ghostty(tokens: Tokens) -> str:
         f"selection-background = {tokens.selection_bg}",
         f"selection-foreground = {tokens.foreground}",
     ]
-    order = [
+    for idx, key in enumerate([
         "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white",
         "bright_black", "bright_red", "bright_green", "bright_yellow",
         "bright_blue", "bright_magenta", "bright_cyan", "bright_white",
-    ]
-    for idx, key in enumerate(order):
+    ]):
         lines.append(f"palette = {idx}={t[key]}")
     return "\n".join(lines) + "\n"
 
 
 def starship(tokens: Tokens) -> str:
-    palette = tokens.variant_id.replace("-", "_")
+    palette = tokens.variant_id
     return f"""# Sequoia {tokens.name}
 palette = "{palette}"
 
@@ -321,13 +346,14 @@ theme:
 
 def neovim(tokens: Tokens) -> str:
     bg = tokens.background
+    vid = tokens.variant_id
     return f"""-- Sequoia {tokens.name} for Neovim
 vim.cmd('hi clear')
 if vim.fn.exists('syntax_on') then
   vim.cmd('syntax reset')
 end
 vim.o.background = '{tokens.appearance}'
-vim.g.colors_name = 'sequoia-{tokens.variant_id}'
+vim.g.colors_name = '{PREFIX}-{vid}'
 
 local M = {{}}
 function M.setup()
@@ -340,61 +366,104 @@ function M.setup()
   vim.cmd('hi Comment guifg={tokens.comment} gui=italic')
   vim.cmd('hi Constant guifg={tokens.constant}')
   vim.cmd('hi String guifg={tokens.string}')
-  vim.cmd('hi Character guifg={tokens.string}')
-  vim.cmd('hi Number guifg={tokens.constant}')
-  vim.cmd('hi Boolean guifg={tokens.constant}')
-  vim.cmd('hi Float guifg={tokens.constant}')
   vim.cmd('hi Identifier guifg={tokens.variable} gui=italic')
   vim.cmd('hi Function guifg={tokens.function} gui=italic')
   vim.cmd('hi Statement guifg={tokens.keyword}')
-  vim.cmd('hi Conditional guifg={tokens.keyword}')
-  vim.cmd('hi Repeat guifg={tokens.keyword}')
   vim.cmd('hi Keyword guifg={tokens.keyword}')
-  vim.cmd('hi Label guifg={tokens.keyword}')
   vim.cmd('hi Operator guifg={tokens.operator}')
-  vim.cmd('hi Exception guifg={tokens.error}')
-  vim.cmd('hi PreProc guifg={tokens.keyword}')
   vim.cmd('hi Type guifg={tokens.type_color}')
-  vim.cmd('hi StorageClass guifg={tokens.keyword}')
-  vim.cmd('hi Structure guifg={tokens.type_color}')
-  vim.cmd('hi Typedef guifg={tokens.type_color}')
-  vim.cmd('hi Special guifg={tokens.type_color}')
-  vim.cmd('hi SpecialChar guifg={tokens.string}')
-  vim.cmd('hi Tag guifg={tokens.type_color}')
-  vim.cmd('hi Delimiter guifg={tokens.operator}')
-  vim.cmd('hi SpecialComment guifg={tokens.comment} gui=italic')
-  vim.cmd('hi Underlined guifg={tokens.function} gui=underline')
   vim.cmd('hi Error guifg={tokens.error}')
-  vim.cmd('hi Todo guifg={tokens.variable} gui=bold')
   vim.cmd('hi StatusLine guifg={tokens.foreground} guibg={tokens.surface}')
   vim.cmd('hi StatusLineNC guifg={tokens.muted} guibg={bg}')
-  vim.cmd('hi TabLine guifg={tokens.muted} guibg={bg}')
-  vim.cmd('hi TabLineFill guifg={tokens.surface} guibg={bg}')
-  vim.cmd('hi TabLineSel guifg={tokens.foreground} guibg={bg} gui=bold')
-  vim.cmd('hi WinSeparator guifg={tokens.muted} guibg={bg}')
   vim.cmd('hi Pmenu guifg={tokens.foreground} guibg={tokens.surface}')
   vim.cmd('hi PmenuSel guifg={tokens.foreground} guibg={tokens.selection_bg}')
-  vim.cmd('hi Search guifg={tokens.foreground} guibg={tokens.selection_bg}')
-  vim.cmd('hi IncSearch guifg={bg} guibg={tokens.accent} gui=bold')
-  vim.cmd('hi DiffAdd guifg={tokens.type_color} guibg={bg}')
-  vim.cmd('hi DiffChange guifg={tokens.variable} guibg={bg}')
-  vim.cmd('hi DiffDelete guifg={tokens.error} guibg={bg}')
-  vim.cmd('hi DiffText guifg={tokens.function} guibg={bg}')
   vim.cmd('hi @variable guifg={tokens.variable} gui=italic')
-  vim.cmd('hi @variable.parameter guifg={tokens.function}')
   vim.cmd('hi @function guifg={tokens.function} gui=italic')
-  vim.cmd('hi @function.builtin guifg={tokens.function} gui=italic')
   vim.cmd('hi @keyword guifg={tokens.keyword}')
   vim.cmd('hi @type guifg={tokens.type_color}')
   vim.cmd('hi @string guifg={tokens.string}')
   vim.cmd('hi @comment guifg={tokens.comment} gui=italic')
-  vim.cmd('hi @tag guifg={tokens.type_color}')
-  vim.cmd('hi @tag.attribute guifg={tokens.function} gui=italic')
 end
 
 M.setup()
 return M
 """
+
+
+def zed_theme_variant(tokens: Tokens) -> dict:
+    t = tokens.terminal
+    ff = lambda c: f"{c}ff" if len(c) == 7 else c
+    border = with_alpha(tokens.muted, "33")
+    return {
+        "name": tokens.name,
+        "appearance": tokens.appearance,
+        "style": {
+            "accents": [
+                ff(tokens.type_color), ff(tokens.variable), ff(tokens.function),
+                ff(tokens.keyword), ff(tokens.string), ff(tokens.error), ff(tokens.muted),
+            ],
+            "background": ff(tokens.background),
+            "border": border,
+            "border.focused": with_alpha(tokens.accent, "77"),
+            "border.selected": with_alpha(tokens.accent, "bb"),
+            "border.transparent": "#00000000",
+            "elevated_surface.background": ff(tokens.surface),
+            "surface.background": ff(tokens.background) + "ee",
+            "element.background": ff(tokens.surface),
+            "element.hover": ff(tokens.muted),
+            "element.selected": ff(tokens.muted),
+            "text": ff(tokens.foreground),
+            "text.muted": ff(tokens.muted),
+            "text.accent": ff(tokens.accent),
+            "icon": ff(tokens.foreground),
+            "icon.muted": ff(tokens.muted),
+            "status_bar.background": ff(tokens.background),
+            "title_bar.background": ff(tokens.background),
+            "toolbar.background": ff(tokens.surface),
+            "tab_bar.background": ff(tokens.background),
+            "tab.inactive_background": ff(tokens.background),
+            "tab.active_background": ff(tokens.background),
+            "panel.background": ff(tokens.background),
+            "editor.foreground": ff(tokens.foreground),
+            "editor.background": ff(tokens.background),
+            "editor.gutter.background": ff(tokens.background),
+            "editor.active_line.background": border,
+            "editor.line_number": ff(tokens.muted),
+            "editor.active_line_number": ff(tokens.foreground),
+            "scrollbar.thumb.background": with_alpha(tokens.muted, "77"),
+            "scrollbar.track.background": ff(tokens.background),
+            "terminal.background": ff(tokens.background),
+            "terminal.foreground": ff(tokens.foreground),
+            "terminal.ansi.black": ff(t["black"]),
+            "terminal.ansi.red": ff(t["red"]),
+            "terminal.ansi.green": ff(t["green"]),
+            "terminal.ansi.yellow": ff(t["yellow"]),
+            "terminal.ansi.blue": ff(t["blue"]),
+            "terminal.ansi.magenta": ff(t["magenta"]),
+            "terminal.ansi.cyan": ff(t["cyan"]),
+            "terminal.ansi.white": ff(t["white"]),
+            "terminal.ansi.bright_black": ff(t["bright_black"]),
+            "terminal.ansi.bright_red": ff(t["bright_red"]),
+            "terminal.ansi.bright_green": ff(t["bright_green"]),
+            "terminal.ansi.bright_yellow": ff(t["bright_yellow"]),
+            "terminal.ansi.bright_blue": ff(t["bright_blue"]),
+            "terminal.ansi.bright_magenta": ff(t["bright_magenta"]),
+            "terminal.ansi.bright_cyan": ff(t["bright_cyan"]),
+            "terminal.ansi.bright_white": ff(t["bright_white"]),
+            "syntax": {
+                "comment": {"color": ff(tokens.comment), "font_style": "italic"},
+                "keyword": {"color": ff(tokens.keyword)},
+                "string": {"color": ff(tokens.string)},
+                "function": {"color": ff(tokens.function), "font_style": "italic"},
+                "variable": {"color": ff(tokens.variable), "font_style": "italic"},
+                "type": {"color": ff(tokens.type_color)},
+                "constant": {"color": ff(tokens.constant)},
+                "tag": {"color": ff(tokens.type_color)},
+                "attribute": {"color": ff(tokens.function), "font_style": "italic"},
+                "punctuation": {"color": ff(tokens.operator)},
+            },
+        },
+    }
 
 
 def zed_family(family_name: str, dark: Tokens, light: Tokens) -> dict:
@@ -418,82 +487,6 @@ def zed_theme(tokens: Tokens) -> dict:
     }
 
 
-def zed_theme_variant(tokens: Tokens) -> dict:
-    t = tokens.terminal
-    ff = lambda c: f"{c}ff" if len(c) == 7 else c
-    border = with_alpha(tokens.muted, "33")
-    return {
-            "name": tokens.name,
-            "appearance": tokens.appearance,
-            "style": {
-                "accents": [
-                    ff(tokens.type_color), ff(tokens.variable), ff(tokens.function),
-                    ff(tokens.keyword), ff(tokens.string), ff(tokens.error), ff(tokens.muted),
-                ],
-                "background": ff(tokens.background),
-                "border": border,
-                "border.focused": with_alpha(tokens.accent, "77"),
-                "border.selected": with_alpha(tokens.accent, "bb"),
-                "border.transparent": "#00000000",
-                "elevated_surface.background": ff(tokens.surface),
-                "surface.background": ff(tokens.background) + "ee",
-                "element.background": ff(tokens.surface),
-                "element.hover": ff(tokens.muted),
-                "element.selected": ff(tokens.muted),
-                "text": ff(tokens.foreground),
-                "text.muted": ff(tokens.muted),
-                "text.accent": ff(tokens.accent),
-                "icon": ff(tokens.foreground),
-                "icon.muted": ff(tokens.muted),
-                "status_bar.background": ff(tokens.background),
-                "title_bar.background": ff(tokens.background),
-                "toolbar.background": ff(tokens.surface),
-                "tab_bar.background": ff(tokens.background),
-                "tab.inactive_background": ff(tokens.background),
-                "tab.active_background": ff(tokens.background),
-                "panel.background": ff(tokens.background),
-                "editor.foreground": ff(tokens.foreground),
-                "editor.background": ff(tokens.background),
-                "editor.gutter.background": ff(tokens.background),
-                "editor.active_line.background": border,
-                "editor.line_number": ff(tokens.muted),
-                "editor.active_line_number": ff(tokens.foreground),
-                "scrollbar.thumb.background": with_alpha(tokens.muted, "77"),
-                "scrollbar.track.background": ff(tokens.background),
-                "terminal.background": ff(tokens.background),
-                "terminal.foreground": ff(tokens.foreground),
-                "terminal.ansi.black": ff(t["black"]),
-                "terminal.ansi.red": ff(t["red"]),
-                "terminal.ansi.green": ff(t["green"]),
-                "terminal.ansi.yellow": ff(t["yellow"]),
-                "terminal.ansi.blue": ff(t["blue"]),
-                "terminal.ansi.magenta": ff(t["magenta"]),
-                "terminal.ansi.cyan": ff(t["cyan"]),
-                "terminal.ansi.white": ff(t["white"]),
-                "terminal.ansi.bright_black": ff(t["bright_black"]),
-                "terminal.ansi.bright_red": ff(t["bright_red"]),
-                "terminal.ansi.bright_green": ff(t["bright_green"]),
-                "terminal.ansi.bright_yellow": ff(t["bright_yellow"]),
-                "terminal.ansi.bright_blue": ff(t["bright_blue"]),
-                "terminal.ansi.bright_magenta": ff(t["bright_magenta"]),
-                "terminal.ansi.bright_cyan": ff(t["bright_cyan"]),
-                "terminal.ansi.bright_white": ff(t["bright_white"]),
-                "syntax": {
-                    "comment": {"color": ff(tokens.comment), "font_style": "italic"},
-                    "keyword": {"color": ff(tokens.keyword)},
-                    "string": {"color": ff(tokens.string)},
-                    "function": {"color": ff(tokens.function), "font_style": "italic"},
-                    "variable": {"color": ff(tokens.variable), "font_style": "italic"},
-                    "type": {"color": ff(tokens.type_color)},
-                    "constant": {"color": ff(tokens.constant)},
-                    "tag": {"color": ff(tokens.type_color)},
-                    "attribute": {"color": ff(tokens.function), "font_style": "italic"},
-                    "punctuation": {"color": ff(tokens.operator)},
-                },
-            },
-    }
-
-
 def obsidian_css(tokens: Tokens) -> str:
     selector = ".theme-dark" if tokens.appearance == "dark" else ".theme-light"
     return f"""/* Sequoia {tokens.name} for Obsidian */
@@ -512,11 +505,6 @@ def obsidian_css(tokens: Tokens) -> str:
   --interactive-accent-hover: {tokens.function};
   --text-selection: {tokens.selection_bg};
   --text-link: {tokens.function};
-  --text-a: {tokens.function};
-  --text-a-hover: {tokens.keyword};
-  --text-mark: {tokens.type_color};
-  --text-tag: {tokens.string};
-  --markup-code: {tokens.string};
   --code-normal: {tokens.string};
   --code-comment: {tokens.comment};
   --code-function: {tokens.function};
@@ -527,15 +515,11 @@ def obsidian_css(tokens: Tokens) -> str:
   --code-string: {tokens.string};
   --code-tag: {tokens.type_color};
   --code-value: {tokens.constant};
-  --blockquote-border: {tokens.function};
   --titlebar-background: {tokens.background};
-  --titlebar-background-focused: {tokens.background};
   --tab-background-active: {tokens.background};
-  --tab-text-color-focused-active: {tokens.foreground};
   --nav-item-background-hover: {tokens.selection_bg};
   --nav-item-background-active: {tokens.selection_bg};
   --checkbox-color: {tokens.accent};
-  --checkbox-color-hover: {tokens.function};
 }}
 """
 
@@ -614,74 +598,629 @@ def shadcn_globals(tokens: Tokens) -> str:
 """
 
 
-def generate_all(all_tokens: dict[str, Tokens]) -> None:
-    if OUT.exists():
-        import shutil
-        shutil.rmtree(OUT)
-    OUT.mkdir()
+# --- New port emitters ---
 
+
+def alacritty(tokens: Tokens) -> str:
+    t = tokens.terminal
+    return f"""# Sequoia {tokens.name} for Alacritty
+
+[colors.primary]
+background = "{tokens.background}"
+foreground = "{tokens.foreground}"
+
+[colors.cursor]
+text = "{tokens.background}"
+cursor = "{tokens.cursor}"
+
+[colors.selection]
+text = "CellForeground"
+background = "{tokens.selection_bg}"
+
+[colors.normal]
+black = "{t['black']}"
+red = "{t['red']}"
+green = "{t['green']}"
+yellow = "{t['yellow']}"
+blue = "{t['blue']}"
+magenta = "{t['magenta']}"
+cyan = "{t['cyan']}"
+white = "{t['white']}"
+
+[colors.bright]
+black = "{t['bright_black']}"
+red = "{t['bright_red']}"
+green = "{t['bright_green']}"
+yellow = "{t['bright_yellow']}"
+blue = "{t['bright_blue']}"
+magenta = "{t['bright_magenta']}"
+cyan = "{t['bright_cyan']}"
+white = "{t['bright_white']}"
+"""
+
+
+def kitty(tokens: Tokens) -> str:
+    t = tokens.terminal
+    palette = terminal_palette_lines(t)
+    lines = [
+        f"# Sequoia {tokens.name} for Kitty",
+        f"background {tokens.background}",
+        f"foreground {tokens.foreground}",
+        f"cursor {tokens.cursor}",
+        f"selection_background {tokens.selection_bg}",
+        f"selection_foreground {tokens.foreground}",
+    ]
+    for i, color in enumerate(palette):
+        lines.append(f"color{i} {color}")
+    return "\n".join(lines) + "\n"
+
+
+def tmux(tokens: Tokens) -> str:
+    t = tokens.terminal
+    palette = terminal_palette_lines(t)
+    lines = [
+        f"# Sequoia {tokens.name} for tmux",
+        f"set -g @dracula-theme '{PREFIX}-{tokens.variant_id}'",
+        f"set -g status-style 'bg={tokens.background},fg={tokens.foreground}'",
+        f"set -g status-left-style 'bg={tokens.surface},fg={tokens.foreground}'",
+        f"set -g status-right-style 'bg={tokens.surface},fg={tokens.muted}'",
+        f"set -g window-status-current-style 'bg={tokens.accent},fg={tokens.accent_fg},bold'",
+        f"set -g window-status-style 'bg={tokens.background},fg={tokens.muted}'",
+        f"set -g message-style 'bg={tokens.surface},fg={tokens.foreground}'",
+        f"set -g pane-border-style 'fg={tokens.muted}'",
+        f"set -g pane-active-border-style 'fg={tokens.accent}'",
+    ]
+    for i, color in enumerate(palette):
+        lines.append(f"set -g @dracula-color{i} '{color}'")
+    return "\n".join(lines) + "\n"
+
+
+def wezterm(tokens: Tokens) -> str:
+    t = tokens.terminal
+    normal = [t[k] for k in ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"]]
+    bright = [t[k] for k in [
+        "bright_black", "bright_red", "bright_green", "bright_yellow",
+        "bright_blue", "bright_magenta", "bright_cyan", "bright_white",
+    ]]
+    fmt = lambda xs: ",\n    ".join(f"'{c}'" for c in xs)
+    return f"""# Sequoia {tokens.name} for WezTerm
+
+[colors]
+ansi = [
+    {fmt(normal)}
+]
+background = '{tokens.background}'
+brights = [
+    {fmt(bright)}
+]
+cursor_bg = '{tokens.cursor}'
+cursor_border = '{tokens.cursor}'
+cursor_fg = '{tokens.background}'
+foreground = '{tokens.foreground}'
+selection_bg = '{tokens.selection_bg}'
+selection_fg = '{tokens.foreground}'
+"""
+
+
+def terminal_color_dict(color: str) -> str:
+    r, g, b = hex_rgb_float(color)
+    return f"""<dict>
+  <key>Color Space</key>
+  <string>sRGB</string>
+  <key>Red Component</key>
+  <real>{r:.6f}</real>
+  <key>Green Component</key>
+  <real>{g:.6f}</real>
+  <key>Blue Component</key>
+  <real>{b:.6f}</real>
+</dict>"""
+
+
+def apple_terminal(tokens: Tokens) -> str:
+    t = tokens.terminal
+    palette = terminal_palette_lines(t)
+    entries = [
+        f"  <key>Background Color</key>\n{terminal_color_dict(tokens.background)}",
+        f"  <key>Text Color</key>\n{terminal_color_dict(tokens.foreground)}",
+        f"  <key>Selection Color</key>\n{terminal_color_dict(tokens.selection_bg)}",
+        f"  <key>Cursor Color</key>\n{terminal_color_dict(tokens.cursor)}",
+    ]
+    for i, color in enumerate(palette):
+        entries.append(f"  <key>Ansi {i} Color</key>\n{terminal_color_dict(color)}")
+    body = "\n".join(entries)
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>name</key>
+  <string>Sequoia {tokens.variant_id.title()}</string>
+{body}
+</dict>
+</plist>
+"""
+
+
+def hyper(tokens: Tokens) -> str:
+    t = tokens.terminal
+    return f"""// Sequoia {tokens.name} for Hyper
+module.exports = {{
+  scheme: '{tokens.name}',
+  author: 'Micheal Andreuzza',
+  colors: {{
+    background: '{tokens.background}',
+    foreground: '{tokens.foreground}',
+    cursor: '{tokens.cursor}',
+    cursorAccent: '{tokens.background}',
+    selection: '{tokens.selection_bg}',
+    black: '{t['black']}',
+    red: '{t['red']}',
+    green: '{t['green']}',
+    yellow: '{t['yellow']}',
+    blue: '{t['blue']}',
+    magenta: '{t['magenta']}',
+    cyan: '{t['cyan']}',
+    white: '{t['white']}',
+    lightBlack: '{t['bright_black']}',
+    lightRed: '{t['bright_red']}',
+    lightGreen: '{t['bright_green']}',
+    lightYellow: '{t['bright_yellow']}',
+    lightBlue: '{t['bright_blue']}',
+    lightMagenta: '{t['bright_magenta']}',
+    lightCyan: '{t['bright_cyan']}',
+    lightWhite: '{t['bright_white']}',
+  }},
+}};
+"""
+
+
+def warp(tokens: Tokens) -> str:
+    t = tokens.terminal
+    return f"""# Sequoia {tokens.name} for Warp
+name: Sequoia {tokens.variant_id.title()}
+accent: '{tokens.accent}'
+background: '{tokens.background}'
+foreground: '{tokens.foreground}'
+details: {'darker' if tokens.appearance == 'dark' else 'lighter'}
+terminal_colors:
+  normal:
+    black: '{t['black']}'
+    red: '{t['red']}'
+    green: '{t['green']}'
+    yellow: '{t['yellow']}'
+    blue: '{t['blue']}'
+    magenta: '{t['magenta']}'
+    cyan: '{t['cyan']}'
+    white: '{t['white']}'
+  bright:
+    black: '{t['bright_black']}'
+    red: '{t['bright_red']}'
+    green: '{t['bright_green']}'
+    yellow: '{t['bright_yellow']}'
+    blue: '{t['bright_blue']}'
+    magenta: '{t['bright_magenta']}'
+    cyan: '{t['bright_cyan']}'
+    white: '{t['bright_white']}'
+"""
+
+
+def bat_tmtheme(tokens: Tokens) -> str:
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>name</key>
+  <string>Sequoia {tokens.variant_id.title()}</string>
+  <key>settings</key>
+  <array>
+    <dict><key>settings</key><dict><key>background</key><string>{tokens.background}</string><key>foreground</key><string>{tokens.foreground}</string><key>caret</key><string>{tokens.cursor}</string><key>selection</key><string>{tokens.selection_bg}</string></dict></dict>
+    <dict><key>scope</key><string>comment</string><key>settings</key><dict><key>foreground</key><string>{tokens.comment}</string><key>fontStyle</key><string>italic</string></dict></dict>
+    <dict><key>scope</key><string>keyword</string><key>settings</key><dict><key>foreground</key><string>{tokens.keyword}</string></dict></dict>
+    <dict><key>scope</key><string>string</string><key>settings</key><dict><key>foreground</key><string>{tokens.string}</string></dict></dict>
+    <dict><key>scope</key><string>entity.name.function</string><key>settings</key><dict><key>foreground</key><string>{tokens.function}</string><key>fontStyle</key><string>italic</string></dict></dict>
+    <dict><key>scope</key><string>variable</string><key>settings</key><dict><key>foreground</key><string>{tokens.variable}</string><key>fontStyle</key><string>italic</string></dict></dict>
+    <dict><key>scope</key><string>entity.name.type</string><key>settings</key><dict><key>foreground</key><string>{tokens.type_color}</string></dict></dict>
+    <dict><key>scope</key><string>constant</string><key>settings</key><dict><key>foreground</key><string>{tokens.constant}</string></dict></dict>
+    <dict><key>scope</key><string>invalid</string><key>settings</key><dict><key>foreground</key><string>{tokens.error}</string></dict></dict>
+  </array>
+</dict>
+</plist>
+"""
+
+
+def delta_gitconfig(tokens: Tokens) -> str:
+    t = tokens.terminal
+    return f"""# Sequoia {tokens.name} for delta
+[delta]
+  minus-color = "{t['red']}"
+  minus-emph-color = "{t['bright_red']}"
+  plus-color = "{t['green']}"
+  plus-emph-color = "{t['bright_green']}"
+  commit-decoration-style = "box ul"
+  commit-color = "{tokens.foreground}"
+  file-style = "bold {tokens.type_color}"
+  hunk-header-decoration-style = "box {tokens.surface}"
+  hunk-header-file-style = "bold {tokens.muted}"
+  hunk-header-line-number-style = "{tokens.muted}"
+  syntax-theme = "Sequoia {tokens.variant_id.title()}"
+"""
+
+
+def pygments_style(tokens: Tokens) -> str:
+    cls = f"Sequoia{tokens.variant_id.title()}Style"
+    return f'''# -*- coding: utf-8 -*-
+"""Sequoia {tokens.name} for Pygments."""
+
+from pygments.style import Style
+from pygments.token import (
+    Comment, Name, String, Error, Number, Operator, Punctuation,
+    Keyword, Generic, Text,
+)
+
+
+class {cls}(Style):
+    background_color = "{tokens.background}"
+    default_style = ""
+
+    styles = {{
+        Text: "{tokens.foreground}",
+        Comment: "{tokens.comment}",
+        Keyword: "{tokens.keyword}",
+        Name: "{tokens.variable}",
+        Name.Function: "{tokens.function}",
+        Name.Class: "{tokens.type_color}",
+        String: "{tokens.string}",
+        Number: "{tokens.constant}",
+        Operator: "{tokens.operator}",
+        Punctuation: "{tokens.operator}",
+        Error: "{tokens.error}",
+        Generic.Deleted: "{tokens.error}",
+        Generic.Inserted: "{tokens.type_color}",
+        Generic.Heading: "{tokens.type_color} bold",
+    }}
+'''
+
+
+def helix(tokens: Tokens) -> str:
+    t = tokens.terminal
+    palette = terminal_palette_lines(t)
+    lines = [
+        f"# Sequoia {tokens.name} for Helix",
+        'inherit = "default_dark"' if tokens.appearance == "dark" else 'inherit = "default_light"',
+        "",
+        "[ui]",
+        f'primary = {{ background = "{tokens.background}", foreground = "{tokens.foreground}" }}',
+        f'cursor = {{ normal = {{ background = "{tokens.cursor}", foreground = "{tokens.background}" }} }}',
+        f'selection = {{ primary = {{ background = "{tokens.selection_bg}", foreground = "{tokens.foreground}" }} }}',
+        f'highlight = {{ background = "{tokens.selection_bg}", foreground = "{tokens.foreground}" }}',
+        "",
+        "[syntax]",
+        f'comment = {{ fg = "{tokens.comment}", modifiers = ["italic"] }}',
+        f'keyword = {{ fg = "{tokens.keyword}" }}',
+        f'string = {{ fg = "{tokens.string}" }}',
+        f'function = {{ fg = "{tokens.function}", modifiers = ["italic"] }}',
+        f'variable = {{ fg = "{tokens.variable}", modifiers = ["italic"] }}',
+        f'type = {{ fg = "{tokens.type_color}" }}',
+        f'constant = {{ fg = "{tokens.constant}" }}',
+        f'attribute = {{ fg = "{tokens.function}", modifiers = ["italic"] }}',
+        f'punctuation = {{ fg = "{tokens.operator}" }}',
+        "",
+        "[palette]",
+    ]
+    for i, color in enumerate(palette):
+        lines.append(f'{i} = "{color}"')
+    return "\n".join(lines) + "\n"
+
+
+def emacs(tokens: Tokens) -> str:
+    return f""";;; Sequoia {tokens.name} for Emacs -*- lexical-binding: t; -*-
+
+(deftheme sequoia-{tokens.variant_id}
+  "Sequoia {tokens.name} theme")
+
+(custom-theme-set-faces
+ `(default ((t (:foreground "{tokens.foreground}" :background "{tokens.background}"))))
+ `(cursor ((t (:background "{tokens.cursor}"))))
+ `(font-lock-comment-face ((t (:foreground "{tokens.comment}" :slant italic))))
+ `(font-lock-keyword-face ((t (:foreground "{tokens.keyword}"))))
+ `(font-lock-string-face ((t (:foreground "{tokens.string}"))))
+ `(font-lock-function-name-face ((t (:foreground "{tokens.function}" :slant italic))))
+ `(font-lock-variable-name-face ((t (:foreground "{tokens.variable}" :slant italic))))
+ `(font-lock-type-face ((t (:foreground "{tokens.type_color}"))))
+ `(font-lock-constant-face ((t (:foreground "{tokens.constant}"))))
+ `(font-lock-builtin-face ((t (:foreground "{tokens.type_color}"))))
+ `(error ((t (:foreground "{tokens.error}"))))
+ `(mode-line ((t (:foreground "{tokens.foreground}" :background "{tokens.surface}"))))
+ `(region ((t (:background "{tokens.selection_bg}")))))
+
+(provide-theme 'sequoia-{tokens.variant_id})
+"""
+
+
+def vim_colorscheme(tokens: Tokens) -> str:
+    return f"""\" Sequoia {tokens.name} for Vim
+hi clear
+if exists('syntax_on')
+  syntax reset
+endif
+set background={tokens.appearance}
+let g:colors_name = '{PREFIX}-{tokens.variant_id}'
+
+hi Normal guifg={tokens.foreground} guibg={tokens.background}
+hi Cursor guifg={tokens.background} guibg={tokens.cursor}
+hi Visual guibg={tokens.selection_bg}
+hi LineNr guifg={tokens.muted} guibg={tokens.background}
+hi Comment guifg={tokens.comment} gui=italic
+hi Constant guifg={tokens.constant}
+hi String guifg={tokens.string}
+hi Identifier guifg={tokens.variable} gui=italic
+hi Function guifg={tokens.function} gui=italic
+hi Statement guifg={tokens.keyword}
+hi Type guifg={tokens.type_color}
+hi Error guifg={tokens.error}
+hi StatusLine guifg={tokens.foreground} guibg={tokens.surface}
+hi Pmenu guifg={tokens.foreground} guibg={tokens.surface}
+hi PmenuSel guifg={tokens.foreground} guibg={tokens.selection_bg}
+"""
+
+
+def raycast(tokens: Tokens) -> str:
+    t = tokens.terminal
+    data = {
+        "author": "Micheal Andreuzza",
+        "authorUsername": "michael-andreuzza",
+        "version": "1",
+        "name": f"Sequoia {tokens.variant_id.title()}",
+        "appearance": tokens.appearance,
+        "colors": {
+            "background": tokens.background.upper(),
+            "backgroundSecondary": tokens.surface.upper(),
+            "text": tokens.foreground.upper(),
+            "selection": tokens.accent.upper(),
+            "loader": tokens.accent.upper(),
+            "red": t["red"].upper(),
+            "orange": tokens.variable.upper(),
+            "yellow": t["yellow"].upper(),
+            "green": t["green"].upper(),
+            "blue": t["blue"].upper(),
+            "purple": tokens.string.upper(),
+            "magenta": t["magenta"].upper(),
+        },
+    }
+    return json.dumps(data, indent=2) + "\n"
+
+
+def typora_css(tokens: Tokens) -> str:
+    return f"""/* Sequoia {tokens.name} for Typora */
+:root {{
+  --bg-color: {tokens.background};
+  --side-bar-bg-color: {tokens.surface};
+  --text-color: {tokens.foreground};
+  --select-text-bg-color: {tokens.selection_bg};
+  --item-hover-bg-color: {tokens.surface};
+  --control-text-color: {tokens.foreground};
+  --control-text-hover-color: {tokens.accent};
+  --active-file-bg-color: {tokens.selection_bg};
+  --active-file-text-color: {tokens.foreground};
+  --window-border: 1px solid {with_alpha(tokens.muted, '33')};
+  --primary-color: {tokens.accent};
+  --search-select-bg-color: {tokens.selection_bg};
+  --rawblock-edit-panel-bd: {tokens.surface};
+  --monospace: "JetBrains Mono", "Fira Code", monospace;
+}}
+
+#write {{
+  max-width: 860px;
+  color: {tokens.foreground};
+  background: {tokens.background};
+}}
+
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {{
+  color: {tokens.type_color};
+}}
+
+#write a {{ color: {tokens.function}; }}
+#write blockquote {{ border-left: 4px solid {tokens.accent}; color: {tokens.muted}; }}
+#write code {{ background: {tokens.surface}; color: {tokens.string}; }}
+#write pre {{ background: {tokens.surface}; }}
+"""
+
+
+def spicetify_color_ini(tokens: Tokens) -> str:
+    t = tokens.terminal
+    return f"""[Variables]
+main_fg = {tokens.foreground}
+main_bg = {tokens.background}
+sidebar_and_player_bg = {tokens.surface}
+card_bg = {tokens.surface}
+secondary_fg = {tokens.muted}
+selected_row = {tokens.selection_bg}
+button = {tokens.accent}
+button_active = {tokens.function}
+button_disabled = {tokens.muted}
+tab_active = {tokens.accent}
+notification = {tokens.surface}
+notification_error = {tokens.error}
+miscellaneous_hover = {tokens.selection_bg}
+"""
+
+
+def spicetify_user_css(tokens: Tokens) -> str:
+    return f"""/* Sequoia {tokens.name} for Spicetify */
+:root {{
+  --spice-main: {tokens.background};
+  --spice-sidebar: {tokens.surface};
+  --spice-player: {tokens.surface};
+  --spice-card: {tokens.surface};
+  --spice-subtext: {tokens.muted};
+  --spice-text: {tokens.foreground};
+  --spice-button: {tokens.accent};
+  --spice-button-active: {tokens.function};
+  --spice-tab-active: {tokens.accent};
+  --spice-notification: {tokens.surface};
+  --spice-notification-error: {tokens.error};
+}}
+"""
+
+
+def firefox_userchrome(tokens: Tokens) -> str:
+    return f"""/* Sequoia {tokens.name} — Firefox userChrome.css */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+:root {{
+  --toolbar-bgcolor: {tokens.background} !important;
+  --toolbar-color: {tokens.foreground} !important;
+  --lwt-accent-color: {tokens.accent} !important;
+  --lwt-text-color: {tokens.foreground} !important;
+  --tab-selected-bgcolor: {tokens.surface} !important;
+  --arrowpanel-background: {tokens.surface} !important;
+  --arrowpanel-color: {tokens.foreground} !important;
+}}
+
+#navigator-toolbox {{
+  background-color: {tokens.background} !important;
+}}
+
+.tab-background[selected="true"] {{
+  background-color: {tokens.surface} !important;
+}}
+"""
+
+
+def chrome_usercss(tokens: Tokens) -> str:
+    return f"""/* Sequoia {tokens.name} — Chrome user stylesheet */
+html, body {{
+  background-color: {tokens.background} !important;
+  color: {tokens.foreground} !important;
+}}
+a {{ color: {tokens.function} !important; }}
+"""
+
+
+def homarr_css(tokens: Tokens) -> str:
+    return f"""/* Sequoia {tokens.name} for Homarr custom CSS */
+:root {{
+  --primary-color: {tokens.accent};
+  --primary-color-dark: {tokens.function};
+  --background-color: {tokens.background};
+  --background-color-secondary: {tokens.surface};
+  --text-color: {tokens.foreground};
+  --text-color-secondary: {tokens.muted};
+  --border-color: {with_alpha(tokens.muted, '33')};
+  --card-background: {tokens.surface};
+  --card-border: {with_alpha(tokens.muted, '33')};
+}}
+"""
+
+
+def homepage_css(tokens: Tokens) -> str:
+    return f"""/* Sequoia {tokens.name} for Homepage (gethomepage) custom CSS */
+:root {{
+  --color-background: {tokens.background};
+  --color-background-highlight: {tokens.surface};
+  --color-foreground: {tokens.foreground};
+  --color-muted: {tokens.muted};
+  --color-primary: {tokens.accent};
+  --color-secondary: {tokens.function};
+  --color-border: {with_alpha(tokens.muted, '33')};
+}}
+"""
+
+
+def jetbrains_icls(tokens: Tokens) -> str:
+    t = tokens.terminal
+    entries = [
+        ("Background", tokens.background),
+        ("Foreground", tokens.foreground),
+        ("Caret", tokens.cursor),
+        ("SelectionBackground", tokens.selection_bg),
+        ("Line numbers", tokens.muted),
+        ("Gutter background", tokens.background),
+        ("Comment", tokens.comment),
+        ("Keyword", tokens.keyword),
+        ("String", tokens.string),
+        ("Number", tokens.constant),
+        ("Function call", tokens.function),
+        ("Function declaration", tokens.function),
+        ("Local variable", tokens.variable),
+        ("Class name", tokens.type_color),
+        ("Type name", tokens.type_color),
+        ("Errors", tokens.error),
+        ("Default text", tokens.foreground),
+    ]
+    options = "\n".join(
+        f'    <option name="{name}">\n      <value>\n        <option name="FOREGROUND" value="{hex6(c).lstrip("#")}" />\n      </value>\n    </option>'
+        if "Background" not in name and "Gutter" not in name and "Selection" not in name
+        else (
+            f'    <option name="{name}">\n      <value>\n        <option name="BACKGROUND" value="{hex6(c).lstrip("#")}" />\n      </value>\n    </option>'
+            if "Background" in name or "Gutter" in name or "Selection" in name
+            else f'    <option name="{name}">\n      <value>\n        <option name="FOREGROUND" value="{hex6(c).lstrip("#")}" />\n      </value>\n    </option>'
+        )
+        for name, c in entries
+    )
+    return f"""<scheme name="Sequoia {tokens.variant_id.title()}" version="142" parent_scheme="Darcula">
+  <meta-info>
+    <property name="created">2026-05-24</property>
+    <property name="ide">idea</property>
+    <property name="ideVersion">2024.1</property>
+    <property name="modified">2026-05-24</property>
+    <property name="originalScheme">Sequoia {tokens.variant_id.title()}</property>
+  </meta-info>
+  <colors>
+    <option name="CONSOLE_BACKGROUND_KEY" value="{tokens.background.lstrip('#')}" />
+    <option name="CARET_COLOR" value="{tokens.cursor.lstrip('#')}" />
+    <option name="GUTTER_BACKGROUND" value="{tokens.background.lstrip('#')}" />
+    <option name="SELECTION_BACKGROUND" value="{tokens.selection_bg[:7].lstrip('#')}" />
+    <option name="TEXT" value="{tokens.foreground.lstrip('#')}" />
+  </colors>
+  <attributes>
+{options}
+  </attributes>
+</scheme>
+"""
+
+
+def figma_palette(tokens: Tokens) -> str:
+    data = {
+        "name": f"Sequoia {tokens.variant_id.title()}",
+        "appearance": tokens.appearance,
+        "colors": tokens.to_dict(),
+        "usage": "Import these values as Figma color variables (Local variables → Create variable → Color).",
+    }
+    return json.dumps(data, indent=2) + "\n"
+
+
+def generate_port_files(all_tokens: dict[str, Tokens]) -> None:
+    def fname(vid: str, ext: str = "") -> str:
+        return f"{PREFIX}-{vid}{ext}"
+
+    # --- Existing 8 ports ---
     ghostty_files = []
     for vid, tok in all_tokens.items():
-        name = f"sequoia-{vid}"
+        name = fname(vid)
         ghostty_files.append(name)
         write(OUT / "ghostty" / name, ghostty(tok))
-
-    write(OUT / "ghostty" / "LICENSE", LICENSE + "\n")
-    write(OUT / "ghostty" / "README.md", port_readme(
-        "Sequoia for Ghostty",
-        """1. Clone or download this repository.
-2. Copy the variant you want into your Ghostty config directory, or add an include to `~/.config/ghostty/config`:
-
-```
-config-file = ~/.config/ghostty/sequoia-moonlight-dark
-```
-
-3. Restart Ghostty.""",
-        ghostty_files,
-    ))
+    write_port("ghostty", "Add `config-file = ~/.config/ghostty/sequoia-midnight` to your Ghostty config.", "Sequoia for Ghostty", ghostty_files)
 
     starship_files = []
     for vid, tok in all_tokens.items():
-        fname = f"starship-{vid}.toml"
-        starship_files.append(fname)
-        write(OUT / "starship" / fname, starship(tok))
-
-    write(OUT / "starship" / "LICENSE", LICENSE + "\n")
-    write(OUT / "starship" / "README.md", port_readme(
-        "Sequoia for Starship",
-        """1. Copy a TOML file to `~/.config/starship/` or merge into `starship.toml`.
-2. Set `palette` to the variant name (e.g. `moonlight_dark`).
-3. Restart your shell.""",
-        starship_files,
-    ))
+        f = f"starship-{vid}.toml"
+        starship_files.append(f)
+        write(OUT / "starship" / f, starship(tok))
+    write_port("starship", "Copy a TOML file to `~/.config/starship.toml` and set `palette`.", "Sequoia for Starship", starship_files)
 
     lazygit_files = []
     for vid, tok in all_tokens.items():
-        fname = f"lazygit-{vid}.yml"
-        lazygit_files.append(fname)
-        write(OUT / "lazygit" / fname, lazygit(tok))
-
-    write(OUT / "lazygit" / "LICENSE", LICENSE + "\n")
-    write(OUT / "lazygit" / "README.md", port_readme(
-        "Sequoia for Lazygit",
-        """1. Copy a YAML file to your Lazygit config path.
-2. Reference it from `~/.config/lazygit/config.yml` under `gui.theme` or merge the `theme` block.""",
-        lazygit_files,
-    ))
+        f = f"lazygit-{vid}.yml"
+        lazygit_files.append(f)
+        write(OUT / "lazygit" / f, lazygit(tok))
+    write_port("lazygit", "Merge a YAML file into your Lazygit config under `gui.theme`.", "Sequoia for Lazygit", lazygit_files)
 
     neovim_files = []
     for vid, tok in all_tokens.items():
-        fname = f"sequoia-{vid}.lua"
-        neovim_files.append(f"colors/{fname}")
-        write(OUT / "neovim" / "colors" / fname, neovim(tok))
-
-    write(OUT / "neovim" / "LICENSE", LICENSE + "\n")
-    write(OUT / "neovim" / "README.md", port_readme(
-        "Sequoia for Neovim",
-        """1. Copy the `colors/` folder into your Neovim config.
-2. Enable with `:colorscheme sequoia-moonlight-dark` (or any variant).""",
-        neovim_files,
-    ))
+        f = f"colors/{fname(vid)}.lua"
+        neovim_files.append(f)
+        write(OUT / "neovim" / f, neovim(tok))
+    write_port("neovim", "Copy `colors/` into your Neovim config and run `:colorscheme sequoia-midnight`.", "Sequoia for Neovim", neovim_files)
 
     zed_files = []
     zed_families = [
@@ -690,10 +1229,10 @@ config-file = ~/.config/ghostty/sequoia-moonlight-dark
         ("sequoia-retro", "Sequoia Retro", "retro-dark", "retro-light"),
     ]
     for slug, family_name, dark_id, light_id in zed_families:
-        fname = f"{slug}.json"
-        zed_files.append(f"themes/{fname}")
+        zed_fname = f"{slug}.json"
+        zed_files.append(f"themes/{zed_fname}")
         family = zed_family(family_name, all_tokens[dark_id], all_tokens[light_id])
-        write(OUT / "zed" / "themes" / fname, json.dumps(family, indent=2) + "\n")
+        write(OUT / "zed" / "themes" / zed_fname, json.dumps(family, indent=2) + "\n")
 
     write(OUT / "zed" / "extension.toml", """id = "sequoia"
 name = "Sequoia"
@@ -703,49 +1242,28 @@ authors = ["Micheal Andreuzza <michael@andreuzza.com>"]
 description = "Sequoia theme for Zed — Moonlight, Monochrome, and Retro (dark and light)"
 repository = "https://github.com/Sequoia-Theme/zed"
 """)
-    write(OUT / "zed" / "LICENSE", LICENSE + "\n")
-    write(OUT / "zed" / "README.md", port_readme(
-        "Sequoia for Zed",
-        """1. In Zed, run **zed: extensions** → **Install Dev Extension** and select this repo.
-2. Open the theme picker (**cmd+k cmd+t** / **ctrl+k ctrl+t**).
-3. Choose **Sequoia Moonlight**, **Sequoia Monochrome**, or **Sequoia Retro**, then pick **Dark** or **Light**.""",
-        zed_files,
-    ))
+    write_port("zed", "Install as a dev extension in Zed (**zed: extensions**). Pick Moonlight, Monochrome, or Retro, then Dark or Light.", "Sequoia for Zed", zed_files + ["extension.toml"])
+
 
     obsidian_files = []
     for vid, tok in all_tokens.items():
-        fname = f"sequoia-{vid}.css"
-        obsidian_files.append(fname)
-        write(OUT / "obsidian" / fname, obsidian_css(tok))
-
-    write(OUT / "obsidian" / "LICENSE", LICENSE + "\n")
-    write(OUT / "obsidian" / "README.md", port_readme(
-        "Sequoia for Obsidian",
-        """1. Copy a CSS file into your vault's `.obsidian/snippets/` folder.
-2. Enable the snippet in **Settings → Appearance → CSS snippets**.""",
-        obsidian_files,
-    ))
+        f = f"{fname(vid)}.css"
+        obsidian_files.append(f)
+        write(OUT / "obsidian" / f, obsidian_css(tok))
+    write_port("obsidian", "Copy CSS into `.obsidian/snippets/` and enable in Appearance settings.", "Sequoia for Obsidian", obsidian_files)
 
     prism_files = []
     for vid, tok in all_tokens.items():
-        fname = f"sequoia-{vid}.css"
-        prism_files.append(fname)
-        write(OUT / "prism" / fname, prism_css(tok))
-
-    write(OUT / "prism" / "LICENSE", LICENSE + "\n")
-    write(OUT / "prism" / "README.md", port_readme(
-        "Sequoia for Prism.js",
-        """1. Include the CSS file in your site.
-2. Use with `prism.js` as usual.""",
-        prism_files,
-    ))
+        f = f"{fname(vid)}.css"
+        prism_files.append(f)
+        write(OUT / "prism" / f, prism_css(tok))
+    write_port("prism", "Include the CSS in your site alongside Prism.js.", "Sequoia for Prism.js", prism_files)
 
     shadcn_dirs = []
     preset_entries = []
     for vid, tok in all_tokens.items():
         shadcn_dirs.append(f"{vid}/globals.css")
         write(OUT / "shadcn-ui" / vid / "globals.css", shadcn_globals(tok))
-        key = vid.replace("-", "_")
         preset_entries.append(f"""      "{vid}": {{
             "background": "{tok.background}",
             "foreground": "{tok.foreground}",
@@ -756,31 +1274,195 @@ repository = "https://github.com/Sequoia-Theme/zed"
             "string": "{tok.string}",
             "error": "{tok.error}"
       }}""")
-
     preset_body = ",\n".join(preset_entries)
-    write(OUT / "shadcn-ui" / "tailwind.preset.js", f"""/** @type {{import('tailwindcss').Config}} */
-module.exports = {{
-  theme: {{
-    extend: {{
-      colors: {{
-{preset_body}
-      }}
-    }},
-  }},
-}};
-""")
-    write(OUT / "shadcn-ui" / "LICENSE", LICENSE + "\n")
-    write(OUT / "shadcn-ui" / "README.md", port_readme(
-        "Sequoia for shadcn/ui",
-        """1. Copy a variant folder's `globals.css` into your app.
-2. Import it in your root layout.
-3. Optionally extend `tailwind.preset.js` in your Tailwind config.""",
-        shadcn_dirs + ["tailwind.preset.js"],
-    ))
+    write(
+        OUT / "shadcn-ui" / "tailwind.preset.js",
+        f"/** @type {{import('tailwindcss').Config}} */\nmodule.exports = {{\n  theme: {{\n    extend: {{\n      colors: {{\n{preset_body}\n      }}\n    }},\n  }},\n}};\n",
+    )
+    write_port("shadcn-ui", "Copy a variant `globals.css` into your app and import in the root layout.", "Sequoia for shadcn/ui", shadcn_dirs + ["tailwind.preset.js"])
 
-    for port in ("ghostty", "starship", "lazygit", "neovim", "zed", "obsidian", "prism", "shadcn-ui"):
+    # --- New terminal ports ---
+    alacritty_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.toml"
+        alacritty_files.append(f)
+        write(OUT / "alacritty" / f, alacritty(tok))
+    write_port("alacritty", "Import the TOML in `alacritty.toml` via `import = [\"path/to/sequoia-midnight.toml\"]`", "Sequoia for Alacritty", alacritty_files)
+
+    kitty_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.conf"
+        kitty_files.append(f)
+        write(OUT / "kitty" / f, kitty(tok))
+    write_port("kitty", "Add `include sequoia-midnight.conf` to `~/.config/kitty/kitty.conf`.", "Sequoia for Kitty", kitty_files)
+
+    tmux_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.conf"
+        tmux_files.append(f)
+        write(OUT / "tmux" / f, tmux(tok))
+    write_port("tmux", "Source a conf file from `~/.tmux.conf`: `run-shell 'tmux source-file ~/.config/tmux/sequoia-midnight.conf'`", "Sequoia for tmux", tmux_files)
+
+    wezterm_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.toml"
+        wezterm_files.append(f)
+        write(OUT / "wezterm" / f, wezterm(tok))
+    write_port("wezterm", "Import in `wezterm.lua`: `config.color_scheme = \"Sequoia Midnight\"` after loading the TOML.", "Sequoia for WezTerm", wezterm_files)
+
+    terminal_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.terminal"
+        terminal_files.append(f)
+        write(OUT / "terminal" / f, apple_terminal(tok))
+    write_port("terminal", "Double-click a `.terminal` file or import via Terminal → Settings → Profiles.", "Sequoia for Terminal.app", terminal_files)
+
+    hyper_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.js"
+        hyper_files.append(f)
+        write(OUT / "hyper" / f, hyper(tok))
+    write_port("hyper", "Set `config.theme` to the path of a theme JS file in `~/.hyper.js`.", "Sequoia for Hyper", hyper_files)
+
+    warp_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.yaml"
+        warp_files.append(f)
+        write(OUT / "warp" / f, warp(tok))
+    write_port("warp", "Import via Warp Settings → Appearance → Custom themes.", "Sequoia for Warp", warp_files)
+
+    # --- CLI ports ---
+    bat_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.tmTheme"
+        bat_files.append(f)
+        write(OUT / "bat" / f, bat_tmtheme(tok))
+    write_port("bat", "Copy to `$(bat --config-dir)/themes/` and set `BAT_THEME=Sequoia Midnight`.", "Sequoia for bat", bat_files)
+
+    delta_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.gitconfig"
+        delta_files.append(f)
+        write(OUT / "delta" / f, delta_gitconfig(tok))
+    write_port("delta", "Include a fragment in `~/.gitconfig` under `[include]` or merge the `[delta]` section.", "Sequoia for delta", delta_files)
+
+    pygments_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{PREFIX}_{vid}.py"
+        pygments_files.append(f)
+        write(OUT / "pygments" / f, pygments_style(tok))
+    write_port("pygments", "Import the style class in your Pygments config or Sphinx `pygments_style`.", "Sequoia for Pygments", pygments_files)
+
+    # --- Editor ports ---
+    helix_files = []
+    for vid, tok in all_tokens.items():
+        f = f"themes/{fname(vid)}.toml"
+        helix_files.append(f)
+        write(OUT / "helix" / f, helix(tok))
+    write_port("helix", "Copy to `~/.config/helix/themes/` and set `theme = \"sequoia-midnight\"` in config.toml.", "Sequoia for Helix", helix_files)
+
+    emacs_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{PREFIX}-{vid}-theme.el"
+        emacs_files.append(f)
+        write(OUT / "emacs" / f, emacs(tok))
+    write_port("emacs", "Add to `load-path` and `(load-theme 'sequoia-midnight t)`.", "Sequoia for Emacs", emacs_files)
+
+    vim_files = []
+    for vid, tok in all_tokens.items():
+        f = f"colors/{fname(vid)}.vim"
+        vim_files.append(f)
+        write(OUT / "vim" / f, vim_colorscheme(tok))
+    write_port("vim", "Copy `colors/` to `~/.vim/colors/` and `:colorscheme sequoia-midnight`.", "Sequoia for Vim", vim_files)
+
+    # --- App ports ---
+    raycast_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.json"
+        raycast_files.append(f)
+        write(OUT / "raycast" / f, raycast(tok))
+    write_port("raycast", "Import JSON via Raycast → Settings → Appearance → Import theme.", "Sequoia for Raycast", raycast_files)
+
+    typora_files = []
+    for vid, tok in all_tokens.items():
+        d = f"{fname(vid)}"
+        typora_files.append(f"{d}/theme.css")
+        write(OUT / "typora" / d / "theme.css", typora_css(tok))
+    write_port("typora", "Copy a theme folder to Typora's themes directory. Mark Text can import the same CSS.", "Sequoia for Typora", typora_files)
+
+    spicetify_files = []
+    for vid, tok in all_tokens.items():
+        d = f"Sequoia-{vid.title()}"
+        spicetify_files.append(f"{d}/color.ini")
+        spicetify_files.append(f"{d}/user.css")
+        write(OUT / "spicetify" / d / "color.ini", spicetify_color_ini(tok))
+        write(OUT / "spicetify" / d / "user.css", spicetify_user_css(tok))
+    write_port("spicetify", "Copy a theme folder into Spicetify's Themes directory and apply with `spicetify config current_theme`.", "Sequoia for Spicetify", spicetify_files)
+
+    # --- Web / dashboards ---
+    browser_files = []
+    for vid, tok in all_tokens.items():
+        browser_files.append(f"firefox/{fname(vid)}/userChrome.css")
+        browser_files.append(f"chrome/{fname(vid)}.css")
+        write(OUT / "browsers" / f"firefox/{fname(vid)}/userChrome.css", firefox_userchrome(tok))
+        write(OUT / "browsers" / f"chrome/{fname(vid)}.css", chrome_usercss(tok))
+    write_port("browsers", "Firefox: enable `toolkit.legacyUserProfileCustomizations.stylesheets` and place `userChrome.css` in your profile chrome folder. Chrome: use Stylus or a similar user stylesheet extension.", "Sequoia for Browsers", browser_files)
+
+    homarr_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.css"
+        homarr_files.append(f)
+        write(OUT / "homarr" / f, homarr_css(tok))
+    write_port("homarr", "Paste CSS into Homarr Settings → Customization → Custom CSS.", "Sequoia for Homarr", homarr_files)
+
+    homepage_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}.css"
+        homepage_files.append(f)
+        write(OUT / "homepage" / f, homepage_css(tok))
+    write_port("homepage", "Add CSS to your Homepage config `settings.customCss` array.", "Sequoia for Homepage", homepage_files)
+
+    # --- Complex ports ---
+    jetbrains_files = []
+    for vid, tok in all_tokens.items():
+        f = f"Sequoia {vid.title()}.icls"
+        jetbrains_files.append(f)
+        write(OUT / "jetbrains" / f, jetbrains_icls(tok))
+    write(OUT / "jetbrains" / "INSTALL.md", """# Install Sequoia color schemes in JetBrains IDEs
+
+1. Open **Settings → Editor → Color Scheme → Gear icon → Import Scheme…**
+2. Select a `.icls` file from this repository.
+3. Choose **Sequoia Midnight**, **Morning**, or **Sunset**.
+
+These are importable color schemes, not a plugin.
+""")
+    write_port("jetbrains", "See `INSTALL.md` for import steps.", "Sequoia for JetBrains", jetbrains_files + ["INSTALL.md"])
+
+    figma_files = []
+    for vid, tok in all_tokens.items():
+        f = f"{fname(vid)}-palette.json"
+        figma_files.append(f)
+        write(OUT / "figma" / f, figma_palette(tok))
+    write(OUT / "figma" / "INSTALL.md", """# Import Sequoia colors into Figma
+
+1. Open a Figma file → **Local variables** → create a color collection.
+2. Use `sequoia-*-palette.json` values for background, foreground, accent, and syntax tokens.
+3. Map semantic names (Background, Text, Accent, Error) to your components.
+
+A Figma plugin is not included in v1.
+""")
+    write_port("figma", "See `INSTALL.md` for manual variable import.", "Sequoia for Figma", figma_files + ["INSTALL.md"])
+
+    for port in ALL_PORTS:
         write_vscode_debug(OUT / port)
 
+
+ALL_PORTS = (
+    "ghostty", "starship", "lazygit", "neovim", "zed", "obsidian", "prism", "shadcn-ui",
+    "alacritty", "kitty", "tmux", "wezterm", "terminal", "hyper", "warp",
+    "bat", "delta", "pygments", "helix", "emacs", "vim",
+    "raycast", "typora", "spicetify", "browsers", "homarr", "homepage", "jetbrains", "figma",
+)
 
 VSCODE_LAUNCH = """{
   "version": "0.2.0",
@@ -876,19 +1558,23 @@ def generate_tokens_json(all_tokens: dict[str, Tokens]) -> None:
     PALETTE_OUT.mkdir(parents=True, exist_ok=True)
     write(PALETTE_OUT / "tokens.json", json.dumps(grouped, indent=2) + "\n")
     write(PALETTE_OUT / "LICENSE", LICENSE + "\n")
-    write(PALETTE_OUT / "README.md", f"""# Sequoia color palette
+    write(PALETTE_OUT / "README.md", f"""![Sequoia]({HEADER})
+
+# Sequoia Color Palette
 
 Design tokens extracted from [Sequoia VS Code](https://github.com/Sequoia-Theme/vs-code).
-
-See the theme on the [official website]({WEBSITE}).
 
 ## tokens.json
 
 Structured colors for **Moonlight**, **Monochrome**, and **Retro** in dark and light modes.
 
-## Created by
+## Regenerate
 
-[Micheal Andreuzza](https://github.com/michael-andreuzza)
+```bash
+python3 sequoia/scripts/generate-ports.py
+```
+
+See the [official website]({WEBSITE}) for all available interfaces.
 """)
 
 
@@ -905,19 +1591,9 @@ See other interfaces at the [official website]({WEBSITE}).
 
 ## Variants
 
-Sequoia ships six VS Code themes:
-
 - **Moonlight Dark** / **Moonlight Light**
 - **Monochrome Dark** / **Monochrome Light**
 - **Retro Dark** / **Retro Light**
-
-Use the same naming pattern in this repo: `sequoia-{{variant}}-{{mode}}`.
-
-## README sections
-
-1. Installation steps for {{APP_NAME}}
-2. Screenshots
-3. Who ported the theme
 
 ## Created by
 
@@ -927,12 +1603,11 @@ Use the same naming pattern in this repo: `sequoia-{{variant}}-{{mode}}`.
 
 def main() -> None:
     all_tokens = {vid: load_tokens(vid, fname) for vid, fname in VARIANTS}
-    generate_all(all_tokens)
+    generate_port_files(all_tokens)
     generate_tokens_json(all_tokens)
     generate_template()
-    print(f"Generated ports in {OUT}")
-    print(f"Generated palette in {PALETTE_OUT}")
-    print(f"Generated template in {TEMPLATE_OUT}")
+    print("Generated Sequoia ports in", OUT)
+    print("Updated palette in", PALETTE_OUT)
 
 
 if __name__ == "__main__":
