@@ -48,6 +48,11 @@ SOFTWARE.
 
 HEADER = "https://raw.githubusercontent.com/Sequoia-Theme/assets/main/githubHeader.png"
 WEBSITE = "https://www.michaelandreuzza.com/vscode/sequoia/"
+AUTHOR_SITE = "https://michaelandreuzza.com/"
+LEXINGTON_THEMES = "https://lexingtonthemes.com/"
+AUTHOR_CREDIT = (
+    f"By [Micheal Andreuzza]({AUTHOR_SITE}) at [Lexington Themes]({LEXINGTON_THEMES})"
+)
 PREFIX = "sequoia"
 
 
@@ -258,7 +263,7 @@ Available files: {file_list}.
 
 ## Created by
 
-[Micheal Andreuzza](https://github.com/michael-andreuzza)
+{AUTHOR_CREDIT}
 """
 
 
@@ -756,7 +761,7 @@ See `COMMUNITY.md` for publishing and release steps.
 
 ## Created by
 
-[Micheal Andreuzza](https://github.com/michael-andreuzza)
+{AUTHOR_CREDIT}
 """
 
 
@@ -1749,7 +1754,7 @@ See `MARKETPLACE.md` for publishing and release steps.
 
 ## Created by
 
-[Micheal Andreuzza](https://github.com/michael-andreuzza)
+{AUTHOR_CREDIT}
 """
 
 
@@ -2384,6 +2389,10 @@ python3 sequoia/scripts/generate-ports.py
 ```
 
 See the [official website]({WEBSITE}) for all available interfaces.
+
+## Created by
+
+{AUTHOR_CREDIT}
 """)
 
 
@@ -2406,7 +2415,7 @@ See other interfaces at the [official website]({WEBSITE}).
 
 ## Created by
 
-[Micheal Andreuzza](https://github.com/michael-andreuzza)
+{AUTHOR_CREDIT}
 """)
 
 
