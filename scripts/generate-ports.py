@@ -678,7 +678,7 @@ Bump `version` in `manifest.json`, add the new version to `versions.json`, commi
 
 
 def obsidian_preview_section(*, brand: str, dark_name: str, light_name: str) -> str:
-    if brand == "Sequoia":
+    if brand in ("Sequoia", "Serendipity"):
         return f"""## Preview
 
 | {dark_name} | {light_name} |
@@ -2018,13 +2018,23 @@ def generate_port_files(all_tokens: dict[str, Tokens]) -> None:
 
     write(OUT / "zed" / "extension.toml", """id = "sequoia"
 name = "Sequoia"
-version = "1.1.0"
+version = "1.32.0"
 schema_version = 1
-authors = ["Micheal Andreuzza <michael@andreuzza.com>"]
-description = "Sequoia theme for Zed — Moonlight, Monochrome, and Retro (dark and light)"
-repository = "https://github.com/Sequoia-Theme/zed"
+authors = [
+  "HarshNarayanJha <harshnj@proton.me>",
+  "Micheal Andreuzza <michael@andreuzza.com>",
+]
+description = "Black, elegant, modern theme for Zed — Moonlight, Monochrome, and Retro in dark and light."
+repository = "https://github.com/HarshNarayanJha/zed-sequoia-theme"
 """)
-    write_port("zed", "Install as a dev extension in Zed (**zed: extensions**). Pick Moonlight, Monochrome, or Retro, then Dark or Light.", "Sequoia for Zed", zed_files + ["extension.toml"])
+    write_port(
+        "zed",
+        """Install from [Zed Extensions](https://zed.dev/extensions/sequoia) (search **Sequoia**).
+
+Source of truth: [HarshNarayanJha/zed-sequoia-theme](https://github.com/HarshNarayanJha/zed-sequoia-theme). Regenerate `themes/sequoia.json` from this folder when opening a PR there.""",
+        "Sequoia for Zed",
+        zed_files + ["extension.toml"],
+    )
 
 
     obsidian_files = generate_obsidian_port(
